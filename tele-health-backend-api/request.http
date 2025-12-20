@@ -1,0 +1,17 @@
+POST http://localhost:5000/api/v1/auth/patient/register
+Content-Type: application/json
+
+{
+  "email": "yj22226134@utg.edu.gm",
+  "password": "Password1234!",
+  "username": "yusuff",
+  "firstName": "Yusuff",
+  "lastName": "Ceesayy",
+  "dateOfBirth": "15-06-1995",
+  "gender": "FEMALE",
+  "phoneNumber": "+220 5123456",
+  "address": "123 Main Street",
+  "city": "Banjul",
+  "state": "West Coast",
+  "zipCode": "00220"
+}

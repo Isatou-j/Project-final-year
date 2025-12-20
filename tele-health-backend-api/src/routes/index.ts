@@ -1,0 +1,14 @@
+export { default as authRoutes } from './auth.route';
+export { default as userRoutes } from './user.route';
+export { default as physicianRoutes } from './physician.route';
+export { default as patientRoutes } from './patient.route';
+export { default as appointmentRoutes } from './appointment.route';
+export { default as reportingRoutes } from './reporting.route';
+export { default as invoiceRoutes } from './invoice.route';
+export { default as receiptRoutes } from './receipt.route';
+export { default as paymentRoutes } from './payment.route';
+export { default as medicalRecordRoutes } from './medical-record.route';
+export { default as prescriptionRoutes } from './prescription.route';
+export { default as serviceRoutes } from './service.route';
+export { default as reviewRoutes } from './review.route';
+export { default as availabilityRoutes } from './availability.route';

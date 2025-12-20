@@ -1,0 +1,402 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              Int            @id @default(autoincrement())
+  email         String    @unique
+  username      String?   @unique
+  password  String
+  role          Role      @default(PATIENT)
+  profileUrl           String?   @db.Text
+  lastLogin            DateTime?
+  isVerified           Boolean   @default(false)
+  emailVerified Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  deletionReason       String?   @db.Text
+  passwordUpdatedAt    DateTime?
+  deletedAt            DateTime?
+  verifiedAt           DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  patient       Patient?
+  physician     Physician?
+  admin         Admin?
+  emailVerification    EmailVerification?
+  passwordResetToken   PasswordResetToken?
+  session              Session?
+
+  @@index([email])
+  @@index([role])
+  @@index([deletedAt, isActive])
+  @@index([createdAt])
+  @@map("users")
+}
+
+enum Role {
+  PATIENT
+  PHYSICIAN
+  ADMIN
+}
+
+model Patient {
+  id              Int            @id @default(autoincrement())
+  userId          Int            @unique
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  firstName       String
+  lastName        String
+  dateOfBirth     DateTime
+  gender          Gender
+  phoneNumber     String
+  address         String
+  city            String
+  state           String
+  zipCode         String
+  emergencyContact String?
+  bloodType       String?
+  allergies       String?
+  medicalHistory  String?
+  
+  appointments    Appointment[]
+  medicalRecords  MedicalRecord[]
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([createdAt])
+  @@map("patients")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+model Physician {
+  id              Int            @id @default(autoincrement())
+  userId            Int        @unique
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  firstName         String
+  lastName          String
+  specialization    String
+  licenseNumber     String        @unique
+  yearsOfExperience Int
+  qualification     String
+  bio               String?
+  profileImage      String?
+  consultationFee   Decimal       @db.Decimal(10, 2)
+  
+  status            PhysicianStatus @default(PENDING)
+  isAvailable       Boolean       @default(false)
+  
+  appointments      Appointment[]
+  availability      Availability[]
+  reviews           Review[]
+  
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  @@index([userId])
+  @@index([specialization])
+  @@index([licenseNumber])
+  @@index([status])
+  @@index([createdAt])
+  @@map("physicians")
+}
+
+enum PhysicianStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+model Admin {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  firstName String
+  lastName  String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("admins")
+}
+
+model Appointment {
+  id              Int              @id @default(autoincrement())
+  patientId       Int
+  patient         Patient           @relation(fields: [patientId], references: [id])
+
+  physicianId     Int
+  physician       Physician         @relation(fields: [physicianId], references: [id])
+  serviceId       Int
+  service         Service           @relation(fields: [serviceId], references: [id])
+  appointmentDate DateTime
+  startTime       DateTime
+  endTime         DateTime
+  status          AppointmentStatus @default(PENDING)
+  consultationType ConsultationType @default(VIDEO)
+  symptoms        String?
+  notes           String?
+  meetingLink     String?
+  payment         Payment?
+  prescription    Prescription?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  
+  @@index([patientId])
+  @@index([serviceId])
+  @@index([physicianId])
+  @@index([appointmentDate])
+  @@index([status])
+  @@map("appointments")
+}
+
+
+enum AppointmentStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+  NO_SHOW
+}
+
+enum ConsultationType {
+  VIDEO
+  AUDIO
+  CHAT
+}
+
+model Service {
+  id              Int            @id @default(autoincrement())
+  name            String         @unique
+  description     String
+  icon            String?
+  isActive        Boolean        @default(true)
+  appointments    Appointment[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([isActive])
+  @@map("services")
+}
+
+model Availability {
+  id              Int            @id @default(autoincrement())
+  physicianId     Int
+  physician       Physician      @relation(fields: [physicianId], references: [id], onDelete: Cascade)
+
+  dayOfWeek       Int            // 0-6 (Sunday-Saturday)
+  startTime       String         // "09:00"
+  endTime         String         // "17:00"
+  isAvailable     Boolean        @default(true)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@unique([physicianId, dayOfWeek])
+  @@index([physicianId])
+  @@map("availabilities")
+}
+
+model Payment {
+  id              Int            @id @default(autoincrement())
+  appointmentId   Int            @unique
+  appointment     Appointment    @relation(fields: [appointmentId], references: [id])
+
+  amount          Decimal        @db.Decimal(10, 2)
+  currency        String         @default("GMD")
+  paymentMethod   PaymentMethod
+  transactionId   String?
+  status          PaymentStatus  @default(PENDING)
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  invoice           Invoice?
+
+  @@index([appointmentId])
+  @@index([status])
+  @@index([paymentMethod])
+  @@index([createdAt])
+  @@map("payments")
+}
+
+enum PaymentMethod {
+  CREDIT_CARD
+  DEBIT_CARD
+  CASH
+  INSURANCE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+model MedicalRecord {
+  id              Int            @id @default(autoincrement())
+  patientId   Int
+  patient     Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  documentName String
+  documentType String
+  fileUrl      String
+  uploadedBy   String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  @@index([patientId])
+  @@index([createdAt])
+  @@map("medical_records")
+}
+
+model Invoice {
+  id            Int           @id @default(autoincrement())
+  payment       Payment        @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  paymentId     Int            @unique
+  invoiceNo     String         @unique @db.VarChar(50)
+  totalAmount   Decimal        @db.Decimal(10, 2)
+  tax           Decimal        @db.Decimal(10, 2)
+  discount      Decimal        @db.Decimal(10, 2)
+  issuedAt      DateTime
+  dueDate       DateTime
+  status        InvoiceStatus  @default(UNPAID)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  receipt       Receipt?
+
+  @@index([invoiceNo])
+  @@index([status])
+  @@index([issuedAt])
+  @@index([dueDate])
+  @@map("invoices")
+}
+
+enum InvoiceStatus {
+  UNPAID
+  PAID
+  CANCELLED
+}
+
+model Receipt {
+  id           Int       @id @default(autoincrement())
+  invoice      Invoice    @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId    Int        @unique
+  receiptNo    String     @unique @db.VarChar(50)
+  issuedAt     DateTime
+  receivedBy   String?    @db.VarChar(255)
+  notes        String?    @db.Text
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([receiptNo])
+  @@index([issuedAt])
+  @@map("receipts")
+}
+
+model Prescription {
+  id            Int         @id @default(autoincrement())
+  appointmentId Int         @unique
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  
+  diagnosis     String
+  medications   String      // JSON string of medications
+  instructions  String?
+  followUpDate  DateTime?
+
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  @@map("prescriptions")
+}
+
+model Review {
+  id              Int            @id @default(autoincrement())
+  physicianId     Int
+  physician       Physician      @relation(fields: [physicianId], references: [id], onDelete: Cascade)
+
+  patientName     String
+  rating          Int            // 1-5
+  comment         String?
+
+  createdAt      DateTime      @default(now())
+
+  @@index([physicianId])
+
+  @@map("reviews")
+}
+
+model EmailVerification {
+  id         Int       @id @default(autoincrement())
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId     Int       @unique
+  code       String    @unique @db.VarChar(6)
+  expiresAt  DateTime
+  createdAt  DateTime  @default(now())
+
+  @@index([code])
+  @@index([expiresAt])
+  @@map("email_verifications")
+}
+
+model PasswordResetToken {
+  id          Int       @id @default(autoincrement())
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      Int       @unique
+  resetToken  String    @unique @db.VarChar(255)
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+
+  @@index([resetToken])
+  @@index([expiresAt])
+  @@map("password_reset_tokens")
+}
+
+model Session {
+  id           Int       @id @default(autoincrement())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       Int       @unique
+  refreshToken String    @db.Text
+  userAgent    String?   @db.Text
+  ipAddress    String?   @db.VarChar(45) // IPv6 max length
+  createdAt    DateTime  @default(now())
+  expiresAt    DateTime
+  revokedAt    DateTime?
+  revoked      Boolean   @default(false)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@index([revoked])
+  @@map("sessions")
+}
+
+model Testimonial {
+  id      Int     @id @default(autoincrement())
+  name    String
+  role    String
+  content String  @db.Text
+  rating  Int     // 1-5
+  image   String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
+}
