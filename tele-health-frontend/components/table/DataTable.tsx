@@ -195,9 +195,9 @@ const DataTable = <T extends Record<string, any>>({
               className={`bg-gray-50 ${stickyHeader ? 'sticky top-0 z-10' : ''}`}
             >
               <TableRow>
-                {columns.map(column => (
+                {columns.map((column, columnIndex) => (
                   <TableHead
-                    key={String(column.key)}
+                    key={`header-${columnIndex}-${String(column.key)}`}
                     className={`px-4 py-3 text-left ${compact ? 'px-2 py-2' : ''}`}
                     style={{ width: column.width }}
                   >
@@ -271,9 +271,9 @@ const DataTable = <T extends Record<string, any>>({
                     } ${compact ? 'text-sm' : ''}`}
                     onClick={() => onRowClick?.(row, rowIndex)}
                   >
-                    {columns.map(column => (
+                    {columns.map((column, columnIndex) => (
                       <TableCell
-                        key={String(column.key)}
+                        key={`cell-${rowIndex}-${columnIndex}-${String(column.key)}`}
                         className={`px-4 py-3 text-gray-900 ${compact ? 'px-2 py-2' : ''} ${
                           column.align === 'center'
                             ? 'text-center'

@@ -11,7 +11,7 @@ const envSchema = z.object({
     .string()
     .transform(Number)
     .pipe(z.number().min(1).max(65535))
-    .default(3000),
+    .default('5000'),
   JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
   JWT_REFRESH_SECRET: z
     .string()
@@ -19,7 +19,16 @@ const envSchema = z.object({
     .optional(),
   JWT_EXPIRES_IN: z.string().default('1h'),
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
-  DATABASE_URL: z.url().default('http://localhost:3000'),
+  DATABASE_URL: z
+    .string()
+    .url('DATABASE_URL must be a valid PostgreSQL connection string')
+    .refine(
+      (url) => url.startsWith('postgresql://') || url.startsWith('postgres://'),
+      {
+        message:
+          'DATABASE_URL must be a PostgreSQL connection string (postgresql:// or postgres://)',
+      },
+    ),
   FRONTEND_URL: z.url().default('http://localhost:3000'),
   ENABLE_CRON_JOBS: z.string().default('false'),
   CLOUDINARY_NAME: z.string().optional(),

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   usePhysicianAvailability,
   useUpdateAvailability,
@@ -37,11 +37,31 @@ const AvailabilityPage = () => {
   const updateAvailability = useUpdateAvailability();
   const updateAvailabilityStatus = useUpdateAvailabilityStatus();
 
+  // Memoize initial data to prevent unnecessary recalculations
+  const initialData = useMemo(() => {
+    const data: Record<
+      number,
+      { startTime: string; endTime: string; isAvailable: boolean }
+    > = {};
+
+    DAYS_OF_WEEK.forEach((day) => {
+      const existing = availabilities.find((a) => a.dayOfWeek === day.value);
+      data[day.value] = {
+        startTime: existing?.startTime || '09:00',
+        endTime: existing?.endTime || '17:00',
+        isAvailable: existing?.isAvailable ?? true,
+      };
+    });
+
+    return data;
+  }, [availabilities]);
+
   const [availabilityData, setAvailabilityData] = useState<
     Record<number, { startTime: string; endTime: string; isAvailable: boolean }>
-  >({});
+  >(initialData);
 
   const [globalAvailable, setGlobalAvailable] = useState(false);
+  const previousDataRef = useRef<string>('');
 
   useEffect(() => {
     if (profile) {
@@ -49,23 +69,17 @@ const AvailabilityPage = () => {
     }
   }, [profile]);
 
+  // Only update state when initialData actually changes (not just reference)
   useEffect(() => {
-    const initialData: Record<
-      number,
-      { startTime: string; endTime: string; isAvailable: boolean }
-    > = {};
-
-    DAYS_OF_WEEK.forEach((day) => {
-      const existing = availabilities.find((a) => a.dayOfWeek === day.value);
-      initialData[day.value] = {
-        startTime: existing?.startTime || '09:00',
-        endTime: existing?.endTime || '17:00',
-        isAvailable: existing?.isAvailable ?? true,
-      };
-    });
-
-    setAvailabilityData(initialData);
-  }, [availabilities]);
+    // Create a stable string representation for comparison
+    const currentDataString = JSON.stringify(initialData);
+    
+    // Only update if the data has actually changed
+    if (previousDataRef.current !== currentDataString) {
+      setAvailabilityData(initialData);
+      previousDataRef.current = currentDataString;
+    }
+  }, [initialData]);
 
   const handleDayToggle = (dayOfWeek: number) => {
     setAvailabilityData((prev) => ({
