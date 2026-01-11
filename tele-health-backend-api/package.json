@@ -69,6 +69,7 @@
     "nodemailer": "^7.0.10",
     "postgres": "^3.4.7",
     "puppeteer": "^24.27.0",
+    "tsx": "^4.20.6",
     "validator": "^13.15.20",
     "winston": "^3.18.3",
     "zod": "^4.1.12"
