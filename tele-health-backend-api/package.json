@@ -25,7 +25,7 @@
     "db:seed": "dotenv -e .env -- tsx src/prisma/seed.ts",
     "db:studio": "dotenv -e .env -- prisma studio",
     "jobs:test": "dotenv -e .env -- tsx src/jobs/test-cron.ts",
-    "postinstall": "prisma generate",
+    "postinstall": " prisma generate",
     "tsc": "tsc --noEmit",
     "tsc:skip": "tsc --noEmit --skipLibCheck"
   },
@@ -48,7 +48,6 @@
     "prettier": "3.6.2",
     "prisma": "^6.18.0",
     "ts-node": "^10.9.2",
-    "tsx": "^4.20.6",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2"
   },
