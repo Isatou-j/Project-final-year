@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { signIn } from 'next-auth/react';
 import { z } from 'zod';
-import { useSearchParams } from 'next/navigation';
+import {useRouter, useSearchParams } from 'next/navigation';
 
 import LogoIcon from '@/components/svg/logo-icon';
 import { Button } from '@/components/ui/button';
@@ -27,6 +27,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showVerificationSuccess, setShowVerificationSuccess] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const emailFromParams = searchParams.get('email');
   const verified = searchParams.get('verified');
 
@@ -94,7 +95,7 @@ const Login = () => {
           }
         }
         
-        window.location.href = redirectUrl;
+       router.push(redirectUrl);
       }
     } catch (error: any) {
       console.error('Error logging in:', error);
