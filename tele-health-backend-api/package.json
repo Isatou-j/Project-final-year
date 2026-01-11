@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "This is manage patients",
   "main": "index.js",
-  "author": "Isatou Ceesay",
+  "author": "Isatou J Ceesay",
   "license": "MIT",
   "type": "module",
   "scripts": {
@@ -25,7 +25,7 @@
     "db:seed": "dotenv -e .env -- tsx src/prisma/seed.ts",
     "db:studio": "dotenv -e .env -- prisma studio",
     "jobs:test": "dotenv -e .env -- tsx src/jobs/test-cron.ts",
-    "postinstall": "dotenv -e .env -- prisma generate",
+    "postinstall": "prisma generate",
     "tsc": "tsc --noEmit",
     "tsc:skip": "tsc --noEmit --skipLibCheck"
   },
