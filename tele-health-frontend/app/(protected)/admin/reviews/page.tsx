@@ -149,7 +149,6 @@ const ReviewsPage = () => {
       render: (value: AdminReview['createdAt']) => formatDate(value),
     },
     {
-      key: 'actions' as keyof AdminReview,
       title: 'Actions',
       render: (value: number, row?: AdminReview) => {
         if (!row) return null;

@@ -150,9 +150,9 @@ const PatientsPage = () => {
       },
     },
     {
-      key: 'actions' as const,
+      key: 'actions' ,
       title: 'Actions',
-      render: (_: any, row?: typeof patients[0]) => {
+      render: (_: any, row?: any) => {
         if (!row) return null;
 
         return (

@@ -222,7 +222,6 @@ const PhysiciansPage = () => {
       },
     },
     {
-      key: 'actions' as keyof Physician,
       title: 'Actions',
       render: (value: number, row?: Physician) => {
         if (!row) return null;

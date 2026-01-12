@@ -230,7 +230,6 @@ const AppointmentsPage = () => {
       },
     },
     {
-      key: 'actions' as keyof AdminAppointment,
       title: 'Actions',
       render: (value: number, row?: AdminAppointment) => {
         if (!row) return null;
