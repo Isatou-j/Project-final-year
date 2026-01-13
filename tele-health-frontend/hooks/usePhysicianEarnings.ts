@@ -67,5 +67,5 @@ export const usePhysicianEarnings = () => {
   });
 };
 
-export type { PhysicianPayment, PhysicianEarnings };
+//export type { PhysicianPayment, PhysicianEarnings };
 
