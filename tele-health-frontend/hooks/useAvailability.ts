@@ -65,5 +65,5 @@ export const useUpdateAvailabilityStatus = () => {
   });
 };
 
-export type { Availability, AvailabilityInput };
+//export type { Availability, AvailabilityInput };
 
