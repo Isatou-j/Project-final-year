@@ -150,7 +150,7 @@ const PatientsPage = () => {
       },
     },
     {
-     key: 'name' as const,
+    // key: 'name' as const,
       title: 'Actions',
       render: (_: any, row?: any) => {
         if (!row) return null;
