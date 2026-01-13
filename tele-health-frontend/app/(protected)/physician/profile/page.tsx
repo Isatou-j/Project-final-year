@@ -40,7 +40,7 @@ const PhysicianProfilePage = () => {
     yearsOfExperience: '',
     qualification: '',
     bio: '',
-    consultationFee: '',
+    consultationFee: 0,
   });
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const PhysicianProfilePage = () => {
         yearsOfExperience: String(profile.yearsOfExperience || 0),
         qualification: profile.qualification || '',
         bio: profile.bio || '',
-        consultationFee: String(profile.consultationFee || '0'),
+        consultationFee: profile.consultationFee || 0,
       });
     }
   }, [profile]);
@@ -67,7 +67,7 @@ const PhysicianProfilePage = () => {
         yearsOfExperience: parseInt(formData.yearsOfExperience),
         qualification: formData.qualification,
         bio: formData.bio,
-        consultationFee: parseFloat(formData.consultationFee),
+        consultationFee: formData.consultationFee,
       });
       alert('Profile updated successfully!');
     } catch (error: any) {
@@ -255,7 +255,7 @@ const PhysicianProfilePage = () => {
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        consultationFee: e.target.value,
+                        consultationFee: parseFloat(e.target.value),
                       })
                     }
                     required
