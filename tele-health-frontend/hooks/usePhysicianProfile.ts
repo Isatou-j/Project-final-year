@@ -12,7 +12,7 @@ export interface PhysicianProfile {
   qualification: string;
   bio: string | null;
   profileImage: string | null;
-  consultationFee: string;
+  consultationFee: number;
   status: string;
   isAvailable: boolean;
   createdAt: string;
@@ -52,5 +52,5 @@ export const useUpdatePhysicianProfile = () => {
   });
 };
 
-export type { PhysicianProfile };
+//export type { PhysicianProfile };
 

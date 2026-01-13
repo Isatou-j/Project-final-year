@@ -52,7 +52,7 @@ const PhysicianProfilePage = () => {
         yearsOfExperience: String(profile.yearsOfExperience || 0),
         qualification: profile.qualification || '',
         bio: profile.bio || '',
-        consultationFee: profile.consultationFee || '0',
+        consultationFee: String(profile.consultationFee || '0'),
       });
     }
   }, [profile]);
