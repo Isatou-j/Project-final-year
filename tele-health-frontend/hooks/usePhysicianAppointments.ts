@@ -72,5 +72,5 @@ export const useUpdateAppointmentStatus = () => {
   });
 };
 
-export type { PhysicianAppointment };
+//export type { PhysicianAppointment };
 
