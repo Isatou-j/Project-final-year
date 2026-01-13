@@ -201,11 +201,13 @@ const ServicesPage = () => {
       },
     },
     {
+      
       key: 'createdAt' as keyof Service,
       title: 'Created',
       render: (value: Service['createdAt']) => formatDate(value),
     },
     {
+      title: 'Actions',
       render: (value: number, row?: Service) => {
         if (!row) return null;
 
