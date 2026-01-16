@@ -121,15 +121,25 @@ const Register = () => {
 
       const result = await registerPatient(apiData);
 
+      toast.success('Registration successful! Please check your email for verification code.');
+      
       // Navigate to email verification page
       router.push(`/verify-email/${encodeURIComponent(data.email)}`);
     } catch (error: any) {
       console.error('Patient registration error:', error);
-      toast.error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'Registration failed. Please try again.',
-      );
+      
+      // Provide more helpful error messages
+      let errorMessage = error?.response?.data?.message || error?.message || 'Registration failed. Please try again.';
+      
+      // Check if it's a connection issue
+      if (error?.message?.includes('timeout') || error?.message?.includes('ECONNABORTED')) {
+        errorMessage = 'Connection timeout. Please check your internet connection and try again. If this persists, the backend server may not be accessible.';
+      }
+      if (error?.message?.includes('ECONNREFUSED') || error?.message?.includes('ENOTFOUND')) {
+        errorMessage = 'Cannot connect to server. Please verify the backend is running and accessible.';
+      }
+      
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }

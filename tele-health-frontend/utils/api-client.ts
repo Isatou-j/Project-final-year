@@ -8,6 +8,19 @@ import { getSession, signOut } from 'next-auth/react';
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:5000/api/v1';
 
+// Log API URL configuration (only in browser, not during SSR)
+if (typeof window !== 'undefined') {
+  console.log('API Client initialized with BASE_URL:', BASE_URL);
+  
+  // Warn if using default localhost URL in production
+  if (BASE_URL.includes('localhost') && process.env.NODE_ENV === 'production') {
+    console.warn(
+      '⚠️ WARNING: Using localhost API URL in production!',
+      'Set NEXT_PUBLIC_API_URL environment variable to your production API URL.'
+    );
+  }
+}
+
 class ApiClient {
   private client: AxiosInstance;
   private isRefreshing = false;
@@ -22,6 +35,11 @@ class ApiClient {
       headers: {
         'Content-Type': 'application/json',
       },
+      timeout: 30000, // 30 second timeout for API requests
+      validateStatus: (status) => {
+        // Don't throw errors for 4xx/5xx responses
+        return status >= 200 && status < 600;
+      },
     });
 
     this.setupInterceptors();
@@ -35,6 +53,16 @@ class ApiClient {
         if (session?.accessToken) {
           config.headers.Authorization = `Bearer ${session.accessToken}`;
         }
+        
+        // Log request URL for debugging (only in development)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('API Request:', {
+            method: config.method?.toUpperCase(),
+            url: config.url,
+            fullUrl: `${config.baseURL}${config.url}`,
+          });
+        }
+        
         return config;
       },
       error => Promise.reject(error),
@@ -45,6 +73,17 @@ class ApiClient {
       (response: AxiosResponse) => response,
       async error => {
         const originalRequest = error.config;
+
+        // Enhanced error logging for 404s
+        if (error.response?.status === 404) {
+          console.error('❌ 404 Not Found:', {
+            url: error.config?.url,
+            fullUrl: `${error.config?.baseURL}${error.config?.url}`,
+            method: error.config?.method?.toUpperCase(),
+            baseURL: error.config?.baseURL,
+            message: 'The API endpoint was not found. Check your NEXT_PUBLIC_API_URL environment variable.',
+          });
+        }
 
         if (error.response?.status === 401 && !originalRequest._retry) {
           if (this.isRefreshing) {

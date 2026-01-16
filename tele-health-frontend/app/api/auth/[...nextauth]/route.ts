@@ -22,11 +22,12 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials) {
         if (!credentials) return null;
 
+        const loginUrl = `${BASE_URL}/auth/login`;
         try {
-          const loginUrl = `${BASE_URL}/auth/login`;
-          console.log('Attempting login to:', loginUrl);
+          console.log('🔵 Attempting login to:', loginUrl);
+          console.log('🔵 BASE_URL:', BASE_URL);
           
-          // Call your backend API
+          // Call your backend API with timeout
           const response = await axios.post(loginUrl, {
             email: credentials.email,
             password: credentials.password,
@@ -34,13 +35,21 @@ export const authOptions: NextAuthOptions = {
             headers: {
               'Content-Type': 'application/json',
             },
+            timeout: 10000, // 10 second timeout
           });
 
           const data = response.data as LoginResponse;
+          console.log('🔵 Login response received:', {
+            hasData: !!data,
+            hasDataData: !!(data && data.data),
+            hasUser: !!(data && data.data && data.data.user),
+            hasToken: !!(data && data.data && data.data.accessToken),
+          });
 
           // Suppose backend returns { user: {...}, accessToken, refreshToken }
           if (data && data.data && data.data.user && data.data.accessToken) {
             const user = data.data.user;
+            console.log('✅ Login successful for user:', user.email);
             return {
               id: user.id.toString(),
               name: user.name || user.email.split('@')[0] || 'User',
@@ -57,16 +66,50 @@ export const authOptions: NextAuthOptions = {
             };
           }
 
-          console.error('Invalid response structure:', data);
+          console.error('❌ Invalid response structure:', {
+            data,
+            expectedStructure: 'data.data.user and data.data.accessToken',
+          });
           return null;
         } catch (e: any) {
-          console.error('Auth error:', e.message);
-          if (e.response) {
-            console.error('Response status:', e.response.status);
-            console.error('Response data:', e.response.data);
-            console.error('Request URL:', e.config?.url);
+          console.error('❌ Auth error:', {
+            message: e.message,
+            code: e.code,
+            response: e.response ? {
+              status: e.response.status,
+              statusText: e.response.statusText,
+              data: e.response.data,
+            } : null,
+            request: e.config ? {
+              url: e.config.url,
+              baseURL: e.config.baseURL,
+              method: e.config.method,
+            } : null,
+            isTimeout: e.code === 'ECONNABORTED' || e.message.includes('timeout'),
+            isConnectionError: e.code === 'ECONNREFUSED' || e.code === 'ENOTFOUND',
+          });
+          
+          // Return a more specific error for NextAuth
+          if (e.code === 'ECONNABORTED' || e.message.includes('timeout')) {
+            const errorMsg = `Connection timeout. Backend not responding at: ${loginUrl}. ` +
+              `Please verify: 1) Backend is deployed and running, 2) NEXT_PUBLIC_API_URL is correct: ${BASE_URL}, ` +
+              `3) Test the health endpoint: ${BASE_URL.replace('/api/v1', '')}/health`;
+            console.error('❌ TIMEOUT DETAILS:', errorMsg);
+            throw new Error(errorMsg);
           }
-          return null;
+          if (e.code === 'ECONNREFUSED' || e.code === 'ENOTFOUND') {
+            const errorMsg = `Cannot connect to server at: ${loginUrl}. ` +
+              `Verify NEXT_PUBLIC_API_URL is correct: ${BASE_URL}. ` +
+              `If using localhost in production, the backend is not accessible.`;
+            console.error('❌ CONNECTION REFUSED:', errorMsg);
+            throw new Error(errorMsg);
+          }
+          if (e.response) {
+            // Pass through backend error messages
+            const errorMsg = e.response.data?.message || `Server error: ${e.response.status}`;
+            throw new Error(errorMsg);
+          }
+          throw new Error(e.message || 'Authentication failed');
         }
       },
     }),

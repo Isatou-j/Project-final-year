@@ -1,6 +1,7 @@
-import nodemailer from 'nodemailer';
-
-const transporter = nodemailer.createTransport({
+//import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
+const resend = new Resend(process.env.Resend_API_KEY);
+/**const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),
@@ -9,7 +10,7 @@ const transporter = nodemailer.createTransport({
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS,
   },
-});
+});*/
 
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
 
@@ -27,8 +28,8 @@ export async function sendEmail({
   code: string;
   expiresAt?: string;
 }) {
-  await transporter.sendMail({
-    from: `"Telehealth Platform" <${process.env.SMTP_USER}>`,
+  await resend.emails.send({
+    from: `"Telehealth Platform" <${process.env.RESEND_FROM_EMAIL}>`,
     to,
     subject,
     html: `
@@ -67,10 +68,7 @@ export const sendVerificationEmail = async (
     const verificationUrl = `${FRONTEND_URL}/verify-email?userId=${userId}&token=${token}`;
 
     const mailOptions = {
-      from: {
-        name: 'Telehealth Platform',
-        address: process.env.SMTP_USER!,
-      },
+      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
       to: email,
       subject: 'Verify Your Email - Telehealth Platform',
       html: `
@@ -168,9 +166,9 @@ export const sendVerificationEmail = async (
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Verification email sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const {data, error } = await resend.emails.send(mailOptions);
+    console.log('✅ Verification email sent successfully:', data?.id);
+    return { success: true, messageId: data?.id};
   } catch (error) {
     console.error('❌ Failed to send verification email:', error);
     throw new Error('Failed to send verification email');
@@ -186,10 +184,7 @@ export const sendPasswordResetEmail = async (
     const resetUrl = `${FRONTEND_URL}/reset-password?token=${resetToken}`;
 
     const mailOptions = {
-      from: {
-        name: 'Telehealth Platform',
-        address: process.env.SMTP_USER!,
-      },
+      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
       to: email,
       subject: 'Reset Your Password - Telehealth Platform',
       html: `
@@ -286,9 +281,9 @@ export const sendPasswordResetEmail = async (
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Password reset email sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const {data, error }  = await resend.emails.send(mailOptions);
+    console.log('✅ Password reset email sent successfully:', data?.id);
+    return { success: true, messageId: data?.id };
   } catch (error) {
     console.error('❌ Failed to send password reset email:', error);
     throw new Error('Failed to send password reset email');
@@ -515,19 +510,16 @@ export const sendWelcomeEmail = async (
     const emailTemplate = getWelcomeEmailTemplate(userName, role);
 
     const mailOptions = {
-      from: {
-        name: 'Telehealth Platform',
-        address: process.env.SMTP_USER!,
-      },
+      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
       to: email,
       subject: `Welcome to Telehealth Platform - Your ${role === 'PHYSICIAN' ? 'Physician' : role === 'ADMIN' ? 'Admin' : 'Patient'} Account is Ready!`,
       html: emailTemplate.html,
       text: emailTemplate.text,
     };
 
-    const info = await transporter.sendMail(mailOptions);
-    console.log('✅ Welcome email sent successfully:', info.messageId);
-    return { success: true, messageId: info.messageId };
+    const {data, error }  = await resend.emails.send(mailOptions);
+    console.log('✅ Welcome email sent successfully:', data?.id);
+    return { success: true, messageId: data?.id };
   } catch (error) {
     console.error('❌ Failed to send welcome email:', error);
     throw new Error('Failed to send welcome email');
@@ -547,10 +539,7 @@ export const sendPhysicianApprovalEmail = async (
       : 'Update on Your Physician Application';
 
     const mailOptions = {
-      from: {
-        name: 'Telehealth Platform',
-        address: process.env.SMTP_USER!,
-      },
+      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
       to: email,
       subject: subject,
       html: `
@@ -699,12 +688,12 @@ export const sendPhysicianApprovalEmail = async (
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    const {data, error }  = await resend.emails.send(mailOptions);
     console.log(
       '✅ Physician approval email sent successfully:',
-      info.messageId,
+      data?.id,
     );
-    return { success: true, messageId: info.messageId };
+    return { success: true, messageId: data?.id };
   } catch (error) {
     console.error('❌ Failed to send physician approval email:', error);
     throw new Error('Failed to send physician approval email');
@@ -726,10 +715,7 @@ export const sendAppointmentConfirmationEmail = async (
       meetingLink || `${FRONTEND_URL}/patient/appointments`;
 
     const mailOptions = {
-      from: {
-        name: 'Telehealth Platform',
-        address: process.env.SMTP_USER!,
-      },
+      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
       to: email,
       subject: 'Appointment Confirmed - Telehealth Platform',
       html: `
@@ -902,12 +888,12 @@ export const sendAppointmentConfirmationEmail = async (
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    const {data, error} = await resend.emails.send(mailOptions);
     console.log(
       '✅ Appointment confirmation email sent successfully:',
-      info.messageId,
+      data?.id,
     );
-    return { success: true, messageId: info.messageId };
+    return { success: true, messageId: data?.id };
   } catch (error) {
     console.error('❌ Failed to send appointment confirmation email:', error);
     throw new Error('Failed to send appointment confirmation email');
@@ -925,10 +911,7 @@ export const sendAppointmentReminderEmail = async (
 ) => {
   try {
     const mailOptions = {
-      from: {
-        name: 'Telehealth Platform',
-        address: process.env.SMTP_USER!,
-      },
+      from:`Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
       to: email,
       subject: 'Reminder: Your Appointment is Tomorrow',
       html: `
@@ -1045,12 +1028,12 @@ export const sendAppointmentReminderEmail = async (
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    const {data, error} = await resend.emails.send(mailOptions);
     console.log(
       '✅ Appointment reminder email sent successfully:',
-      info.messageId,
+      data?.id,
     );
-    return { success: true, messageId: info.messageId };
+    return { success: true, messageId: data?.id };
   } catch (error) {
     console.error('❌ Failed to send appointment reminder email:', error);
     throw new Error('Failed to send appointment reminder email');
@@ -1068,10 +1051,7 @@ export const sendAppointmentCancellationEmail = async (
 ) => {
   try {
     const mailOptions = {
-      from: {
-        name: 'Telehealth Platform',
-        address: process.env.SMTP_USER!,
-      },
+      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
       to: email,
       subject: 'Appointment Cancelled - Telehealth Platform',
       html: `
@@ -1163,12 +1143,12 @@ export const sendAppointmentCancellationEmail = async (
       `,
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    const {data, error} = await resend.emails.send(mailOptions);
     console.log(
       '✅ Appointment cancellation email sent successfully:',
-      info.messageId,
+      data?.id,
     );
-    return { success: true, messageId: info.messageId };
+    return { success: true, messageId: data?.id };
   } catch (error) {
     console.error('❌ Failed to send appointment cancellation email:', error);
     throw new Error('Failed to send appointment cancellation email');
