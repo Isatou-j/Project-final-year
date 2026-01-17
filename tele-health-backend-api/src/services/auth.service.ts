@@ -74,13 +74,24 @@ export const registerPatient = async (
 
   const expiryTime = getRelativeExpiry(expiresAt);
 
-  await sendEmail({
-    to: user.newUser.email,
-    subject: 'Your Verification Code',
-    text: 'verification code',
-    code: code,
-    expiresAt: expiryTime,
-  });
+  try {
+    await sendEmail({
+      to: user.newUser.email,
+      subject: 'Your Verification Code',
+      text: 'verification code',
+      code: code,
+      expiresAt: expiryTime,
+    });
+    console.log('✅ Verification email sent to patient:', user.newUser.email);
+  } catch (emailError: any) {
+    console.error('❌ Failed to send verification email during patient registration:', {
+      email: user.newUser.email,
+      error: emailError?.message,
+      stack: emailError?.stack,
+    });
+    // Continue with registration even if email fails
+    // User can request a new code later
+  }
 
   const accessToken = generateToken({
     id: user.newUser.id,
@@ -196,13 +207,24 @@ export const registerPhysician = async (
 
   const expiryTime = getRelativeExpiry(expiresAt);
 
-  await sendEmail({
-    to: user.newUser.email,
-    subject: 'Your Verification Code',
-    text: 'verification code',
-    code: code,
-    expiresAt: expiryTime,
-  });
+  try {
+    await sendEmail({
+      to: user.newUser.email,
+      subject: 'Your Verification Code',
+      text: 'verification code',
+      code: code,
+      expiresAt: expiryTime,
+    });
+    console.log('✅ Verification email sent to physician:', user.newUser.email);
+  } catch (emailError: any) {
+    console.error('❌ Failed to send verification email during physician registration:', {
+      email: user.newUser.email,
+      error: emailError?.message,
+      stack: emailError?.stack,
+    });
+    // Continue with registration even if email fails
+    // User can request a new code later
+  }
 
   const accessToken = generateToken({
     id: user.newUser.id,
@@ -711,13 +733,23 @@ export const requestVerificationCode = async (
 
   const expiryTime = getRelativeExpiry(expiresAt);
 
-  await sendEmail({
-    to: email,
-    subject: 'Your Verification Code',
-    text: 'verification code',
-    code: code,
-    expiresAt: expiryTime,
-  });
+  try {
+    await sendEmail({
+      to: email,
+      subject: 'Your Verification Code',
+      text: 'verification code',
+      code: code,
+      expiresAt: expiryTime,
+    });
+    console.log('✅ Verification code email sent to:', email);
+  } catch (emailError: any) {
+    console.error('❌ Failed to send verification code email:', {
+      email,
+      error: emailError?.message,
+      stack: emailError?.stack,
+    });
+    throw new Error('Failed to send verification code. Please check your email configuration.');
+  }
 };
 
 export const requestPasswordReset = async (

@@ -28,11 +28,34 @@ export async function sendEmail({
   code: string;
   expiresAt?: string;
 }) {
-  await resend.emails.send({
-    from: `"Telehealth Platform" <${process.env.RESEND_FROM_EMAIL}>`,
-    to,
-    subject,
-    html: `
+  try {
+    // Check if Resend is configured
+    const apiKey = process.env.Resend_API_KEY || process.env.RESEND_API_KEY;
+    const fromEmail = process.env.RESEND_FROM_EMAIL;
+
+    if (!apiKey) {
+      console.error('❌ RESEND_API_KEY is not set in environment variables');
+      throw new Error('Email service not configured: RESEND_API_KEY is missing');
+    }
+
+    if (!fromEmail) {
+      console.error('❌ RESEND_FROM_EMAIL is not set in environment variables');
+      throw new Error('Email service not configured: RESEND_FROM_EMAIL is missing');
+    }
+
+    console.log('📧 Attempting to send email:', {
+      to,
+      from: fromEmail,
+      subject,
+      hasApiKey: !!apiKey,
+      apiKeyPrefix: apiKey?.substring(0, 5) + '...',
+    });
+
+    const result = await resend.emails.send({
+      from: `"Telehealth Platform" <${fromEmail}>`,
+      to,
+      subject,
+      html: `
       <div style="max-width: 500px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #eaeaea; border-radius: 10px; background-color: #ffffff;">
       <h2 style="color: #2c3e50; text-align: center;">Verify Your Email</h2>
       <p style="font-size: 16px; color: #555;">
@@ -54,8 +77,31 @@ export async function sendEmail({
       </p>
     </div>
     `,
-    text: `Your Telehealth Platform ${text} is: ${code}. This code is valid for the next ${expiresAt}. Please do not share this code with anyone.`,
-  });
+      text: `Your Telehealth Platform ${text} is: ${code}. This code is valid for the next ${expiresAt}. Please do not share this code with anyone.`,
+    });
+
+    if (result.error) {
+      console.error('❌ Resend API error:', result.error);
+      throw new Error(`Failed to send email: ${JSON.stringify(result.error)}`);
+    }
+
+    console.log('✅ Email sent successfully:', {
+      emailId: result.data?.id,
+      to,
+    });
+
+    return result;
+  } catch (error: any) {
+    console.error('❌ Error sending verification email:', {
+      error: error?.message,
+      stack: error?.stack,
+      to,
+      code,
+    });
+    // Don't throw - allow registration to complete even if email fails
+    // But log the error so it can be debugged
+    throw error;
+  }
 }
 
 // Email Verification

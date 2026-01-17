@@ -58,10 +58,50 @@ app.use(
 
 app.use(xssProtection);
 
+// CORS configuration - allow multiple frontend URLs
+const allowedOriginStrings = [
+  env.FRONTEND_URL,
+  'https://isha-final-year-project-frontend.vercel.app',
+  'https://project-final-year-git-main-isatou-j-ceesays-projects.vercel.app',
+];
+
+// Remove duplicates and trailing slashes
+const uniqueOrigins = [...new Set(allowedOriginStrings.map(url => url.replace(/\/$/, '')))];
+
 app.use(
   cors({
-    origin: env.FRONTEND_URL,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      // In development, allow localhost
+      if (env.NODE_ENV === 'development' && origin.includes('localhost')) {
+        return callback(null, true);
+      }
+      
+      // Normalize origin (remove trailing slash)
+      const normalizedOrigin = origin.replace(/\/$/, '');
+      
+      // Check if origin matches any allowed origin (exact match)
+      const isAllowed = uniqueOrigins.some(allowed => {
+        const normalizedAllowed = allowed.replace(/\/$/, '');
+        return normalizedOrigin === normalizedAllowed;
+      });
+      
+      // Also allow any Vercel preview deployments
+      const isVercelPreview = /^https:\/\/.*\.vercel\.app$/.test(normalizedOrigin);
+      
+      if (isAllowed || isVercelPreview) {
+        callback(null, true);
+      } else {
+        console.warn('⚠️ CORS blocked origin:', origin);
+        console.log('Allowed origins:', uniqueOrigins);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
 
