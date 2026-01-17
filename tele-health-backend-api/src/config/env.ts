@@ -41,6 +41,10 @@ const envSchema = z.object({
   EMAIL_FROM: z.email().optional(),
   REDIS_URL: z.url().optional(),
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'http', 'debug']).default('info'),
+  // Resend Email Configuration
+  Resend_API_KEY: z.string().optional(),
+  RESEND_API_KEY: z.string().optional(), // Alternative naming
+  RESEND_FROM_EMAIL: z.string().email().optional(),
 });
 
 const validateEnv = () => {
@@ -65,6 +69,9 @@ const validateEnv = () => {
       EMAIL_FROM: process.env.EMAIL_FROM,
       REDIS_URL: process.env.REDIS_URL,
       LOG_LEVEL: process.env.LOG_LEVEL,
+      Resend_API_KEY: process.env.Resend_API_KEY || process.env.RESEND_API_KEY,
+      RESEND_API_KEY: process.env.RESEND_API_KEY || process.env.Resend_API_KEY,
+      RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

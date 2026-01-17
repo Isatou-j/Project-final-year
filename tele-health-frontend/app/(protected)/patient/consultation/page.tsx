@@ -116,8 +116,11 @@ const PatientConsultationsPage = () => {
             </div>
           </div>
           <div className='flex gap-2'>
-            {app.status === 'CONFIRMED' && (
-              <Button className='bg-teal-600 hover:bg-teal-700 text-white'>
+            {app.status === 'CONFIRMED' && app.meetingLink && (
+              <Button 
+                className='bg-teal-600 hover:bg-teal-700 text-white'
+                onClick={() => window.open(app.meetingLink!, '_blank')}
+              >
                 Join Consultation
               </Button>
             )}

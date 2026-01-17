@@ -236,7 +236,7 @@ const Register = () => {
                   <User className='absolute left-3 top-3 w-4 h-4 text-gray-400' />
                   <Input
                     id='firstName'
-                    placeholder='John'
+                    placeholder='Isatou'
                     className='pl-10'
                     {...patientForm.register('firstName')}
                   />
@@ -251,7 +251,7 @@ const Register = () => {
                 <Label htmlFor='lastName'>Last Name</Label>
                 <Input
                   id='lastName'
-                  placeholder='Doe'
+                  placeholder='Ceesay'
                   {...patientForm.register('lastName')}
                 />
                 {patientForm.formState.errors.lastName && (
@@ -485,7 +485,7 @@ const Register = () => {
                   <User className='absolute left-3 top-3 w-4 h-4 text-gray-400' />
                   <Input
                     id='docFirstName'
-                    placeholder='Dr. Jane'
+                    placeholder='Dr Omar'
                     className='pl-10'
                     {...physicianForm.register('firstName')}
                   />
@@ -500,7 +500,7 @@ const Register = () => {
                 <Label htmlFor='docLastName'>Last Name</Label>
                 <Input
                   id='docLastName'
-                  placeholder='Smith'
+                  placeholder='Ceesay'
                   {...physicianForm.register('lastName')}
                 />
                 {physicianForm.formState.errors.lastName && (

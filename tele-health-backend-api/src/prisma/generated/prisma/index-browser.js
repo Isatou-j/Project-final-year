@@ -331,9 +331,27 @@ exports.Prisma.TestimonialScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  title: 'title',
+  message: 'message',
+  link: 'link',
+  metadata: 'metadata',
+  isRead: 'isRead',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
 };
 
 exports.Prisma.QueryMode = {
@@ -344,6 +362,12 @@ exports.Prisma.QueryMode = {
 exports.Prisma.NullsOrder = {
   first: 'first',
   last: 'last'
+};
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
 };
 exports.Role = exports.$Enums.Role = {
   PATIENT: 'PATIENT',
@@ -399,6 +423,14 @@ exports.InvoiceStatus = exports.$Enums.InvoiceStatus = {
   CANCELLED: 'CANCELLED'
 };
 
+exports.NotificationType = exports.$Enums.NotificationType = {
+  APPOINTMENT: 'APPOINTMENT',
+  PRESCRIPTION: 'PRESCRIPTION',
+  PAYMENT: 'PAYMENT',
+  MEDICAL_RECORD: 'MEDICAL_RECORD',
+  SYSTEM: 'SYSTEM'
+};
+
 exports.Prisma.ModelName = {
   User: 'User',
   Patient: 'Patient',
@@ -416,7 +448,8 @@ exports.Prisma.ModelName = {
   EmailVerification: 'EmailVerification',
   PasswordResetToken: 'PasswordResetToken',
   Session: 'Session',
-  Testimonial: 'Testimonial'
+  Testimonial: 'Testimonial',
+  Notification: 'Notification'
 };
 
 /**

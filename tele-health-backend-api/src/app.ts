@@ -131,29 +131,6 @@ app.get('/', (req: Request, res: Response) => {
     },
   });
 });
-app.get('/', (req: Request, res: Response) => {
-  res.json({
-    message: 'Tele-Health API',
-    status: 'running',
-    version: '1.0.0',
-    endpoints: {
-      health: '/health',
-      api: '/api/v1',
-    },
-  });
-});
-
-app.get('/', (req: Request, res: Response) => {
-  res.json({
-    message: 'Tele-Health API',
-    status: 'running',
-    version: '1.0.0',
-    endpoints: {
-      health: '/health',
-      api: '/api/v1',
-    },
-  });
-});
 app.use(errorHandler);
 
 export default app;

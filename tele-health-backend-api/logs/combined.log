@@ -1764,3 +1764,14 @@
 {"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /statistics - 200 - 1408ms - 76 bytes\u001b[39m","timestamp":"2026-01-16 16:45:28:4528"}
 {"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /api/v1/auth/patient/register - ::1\u001b[39m","timestamp":"2026-01-16 16:51:18:5118"}
 {"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /patient/register - 201 - 1849ms - 1172 bytes\u001b[39m","timestamp":"2026-01-16 16:51:20:5120"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /api/v1/physician/public?limit=8 - ::1\u001b[39m","timestamp":"2026-01-17 11:25:23:2523"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /api/v1/physician/top-rated - ::1\u001b[39m","timestamp":"2026-01-17 11:25:23:2523"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /api/v1/physician/statistics - ::1\u001b[39m","timestamp":"2026-01-17 11:25:23:2523"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /api/v1/reviews?limit=6&sortBy=rating&sortOrder=desc - ::1\u001b[39m","timestamp":"2026-01-17 11:25:23:2523"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /api/v1/reviews/statistics - ::1\u001b[39m","timestamp":"2026-01-17 11:25:23:2523"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /top-rated - 200 - 789ms - 288 bytes\u001b[39m","timestamp":"2026-01-17 11:25:24:2524"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /public?limit=8 - 200 - 981ms - 1532 bytes\u001b[39m","timestamp":"2026-01-17 11:25:24:2524"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /?limit=6&sortBy=rating&sortOrder=desc - 200 - 839ms - 932 bytes\u001b[39m","timestamp":"2026-01-17 11:25:24:2524"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /statistics - 200 - 1531ms - 76 bytes\u001b[39m","timestamp":"2026-01-17 11:25:25:2525"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /api/v1/auth/patient/register - ::1\u001b[39m","timestamp":"2026-01-17 11:29:43:2943"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /patient/register - 201 - 2802ms - 1225 bytes\u001b[39m","timestamp":"2026-01-17 11:29:46:2946"}

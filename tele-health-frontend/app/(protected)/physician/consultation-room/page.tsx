@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   usePhysicianAppointments,
   type PhysicianAppointment,
@@ -45,6 +46,7 @@ const STATUS_COLOR: Record<string, string> = {
 };
 
 const PhysicianConsultationRoomPage = () => {
+  const router = useRouter();
   const { data, isLoading, isError, refetch } = usePhysicianAppointments();
   const [filter, setFilter] = useState<ConsultationFilter>('ALL');
 
@@ -89,8 +91,9 @@ const PhysicianConsultationRoomPage = () => {
   }, [consultations]);
 
   const handleJoin = (appointment: PhysicianAppointment) => {
-    if (!appointment.meetingLink) return;
-    window.open(appointment.meetingLink, '_blank', 'noopener,noreferrer');
+    if (appointment.meetingLink) {
+      window.open(appointment.meetingLink, '_blank');
+    }
   };
 
   const renderCard = (app: PhysicianAppointment) => {
@@ -98,7 +101,7 @@ const PhysicianConsultationRoomPage = () => {
       ? `${app.patient.firstName} ${app.patient.lastName}`.trim()
       : 'Patient';
     const serviceName = app.service?.name ?? 'Consultation';
-    const canJoin = app.status === 'CONFIRMED' && !!app.meetingLink;
+    const canJoin = app.status === 'CONFIRMED';
 
     return (
       <Card key={app.id}>

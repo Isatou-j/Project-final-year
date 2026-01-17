@@ -1,6 +1,6 @@
 //import nodemailer from 'nodemailer';
 import { Resend } from 'resend';
-const resend = new Resend(process.env.Resend_API_KEY);
+const resend = new Resend(process.env.Resend_API_KEY || process.env.RESEND_API_KEY);
 /**const transporter = nodemailer.createTransport({
   service: 'gmail',
   host: process.env.SMTP_HOST,

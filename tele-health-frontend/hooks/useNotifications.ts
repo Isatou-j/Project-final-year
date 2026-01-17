@@ -103,9 +103,51 @@ export const useMarkNotificationAsRead = () => {
   
   return useMutation({
     mutationFn: async (notificationId: number) => {
-      // In a real implementation, this would call the backend
-      // For now, we'll just update the cache
-      return { success: true };
+      try {
+        const response = await apiClient.patch(`/notifications/${notificationId}/read`);
+        return response.data;
+      } catch (error) {
+        console.error('Error marking notification as read:', error);
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+};
+
+export const useMarkAllNotificationsAsRead = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async () => {
+      try {
+        const response = await apiClient.patch('/notifications/read-all');
+        return response.data;
+      } catch (error) {
+        console.error('Error marking all notifications as read:', error);
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
+  });
+};
+
+export const useDeleteNotification = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (notificationId: number) => {
+      try {
+        const response = await apiClient.delete(`/notifications/${notificationId}`);
+        return response.data;
+      } catch (error) {
+        console.error('Error deleting notification:', error);
+        throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
