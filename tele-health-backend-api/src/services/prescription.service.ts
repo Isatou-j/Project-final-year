@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import prisma from '../lib/prisma';
+import * as notificationService from './notification.service';
 
 export const createPrescription = async (data: {
   appointmentId: number;
@@ -8,7 +9,7 @@ export const createPrescription = async (data: {
   instructions?: string;
   followUpDate?: Date;
 }) => {
-  return prisma.prescription.create({
+  const prescription = await prisma.prescription.create({
     data,
     include: {
       appointment: {

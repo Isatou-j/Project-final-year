@@ -22,6 +22,7 @@ import {
   reviewRoutes,
   availabilityRoutes,
 } from './routes';
+import notificationRoutes from './routes/notification.route';
 
 
 import { errorHandler } from './middleware/error.middleware';
@@ -72,10 +73,14 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
+      if (!origin) {
+        console.log('✅ CORS: Allowing request with no origin');
+        return callback(null, true);
+      }
       
       // In development, allow localhost
       if (env.NODE_ENV === 'development' && origin.includes('localhost')) {
+        console.log('✅ CORS: Allowing localhost origin:', origin);
         return callback(null, true);
       }
       
@@ -92,16 +97,20 @@ app.use(
       const isVercelPreview = /^https:\/\/.*\.vercel\.app$/.test(normalizedOrigin);
       
       if (isAllowed || isVercelPreview) {
+        console.log('✅ CORS: Allowing origin:', origin);
         callback(null, true);
       } else {
-        console.warn('⚠️ CORS blocked origin:', origin);
-        console.log('Allowed origins:', uniqueOrigins);
+        console.error('❌ CORS blocked origin:', origin);
+        console.log('📋 Allowed origins:', uniqueOrigins);
+        console.log('📋 FRONTEND_URL from env:', env.FRONTEND_URL);
         callback(new Error('Not allowed by CORS'));
       }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   }),
 );
 
@@ -139,6 +148,7 @@ app.use('/api/v1/prescription', prescriptionRoutes);
 app.use('/api/v1/service', serviceRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/availability', availabilityRoutes);
+app.use('/api/v1/notifications', notificationRoutes);
 
 app.get('/health', async (_: Request, res: Response) => {
   try {
@@ -148,6 +158,11 @@ app.get('/health', async (_: Request, res: Response) => {
       uptime: process.uptime(),
       environment: env.NODE_ENV,
       version: process.env.npm_package_version || '1.0.0',
+      frontendUrl: env.FRONTEND_URL,
+      allowedOrigins: uniqueOrigins,
+      hasResendKey: !!(process.env.Resend_API_KEY || process.env.RESEND_API_KEY),
+      hasResendFromEmail: !!process.env.RESEND_FROM_EMAIL,
+      resendFromEmail: process.env.RESEND_FROM_EMAIL || 'NOT SET',
     };
 
     res.status(200).json(healthCheck);

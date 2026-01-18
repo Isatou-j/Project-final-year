@@ -61,6 +61,23 @@ export const approvePhysician = async (physicianId: number) => {
     // Don't throw - approval was successful even if email failed
   }
 
+  // Send notification
+  try {
+    await notificationService.createNotification({
+      userId: physician.userId,
+      type: 'SYSTEM',
+      title: 'Account Approved',
+      message: 'Your physician account has been approved! You can now start accepting appointments.',
+      link: '/physician/dashboard',
+      metadata: {
+        physicianId: physician.id,
+        status: 'APPROVED',
+      },
+    });
+  } catch (notificationError) {
+    console.error('Failed to send approval notification:', notificationError);
+  }
+
   return physician;
 };
 

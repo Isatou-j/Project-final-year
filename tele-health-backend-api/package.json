@@ -25,7 +25,7 @@
     "db:seed": "dotenv -e .env -- tsx src/prisma/seed.ts",
     "db:studio": "dotenv -e .env -- prisma studio",
     "jobs:test": "dotenv -e .env -- tsx src/jobs/test-cron.ts",
-    "postinstall": " prisma generate",
+    "postinstall": "node -e \"try { if (process.env.DATABASE_URL) { require('child_process').execSync('prisma generate', {stdio: 'inherit'}) } else { console.log('⚠️  Skipping prisma generate: DATABASE_URL not set. Run: npm run db:generate') } } catch(e) { console.log('⚠️  Skipping prisma generate. Run: npm run db:generate') }\"",
     "tsc": "tsc --noEmit",
     "tsc:skip": "tsc --noEmit --skipLibCheck"
   },
@@ -70,6 +70,7 @@
     "postgres": "^3.4.7",
     "puppeteer": "^24.27.0",
     "resend": "^6.7.0",
+    "socket.io": "^4.7.5",
     "tsx": "^4.20.6",
     "validator": "^13.15.20",
     "winston": "^3.18.3",

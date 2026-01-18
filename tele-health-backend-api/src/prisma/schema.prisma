@@ -32,6 +32,7 @@ model User {
   emailVerification    EmailVerification?
   passwordResetToken   PasswordResetToken?
   session              Session?
+  notifications        Notification[]
 
   @@index([email])
   @@index([role])
@@ -399,4 +400,32 @@ model Testimonial {
   updatedAt DateTime @updatedAt
 
   @@map("testimonials")
+}
+
+model Notification {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  message   String    @db.Text
+  link      String?   @db.Text
+  metadata  Json?     // Store additional data like appointmentId, etc.
+  isRead    Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+  @@index([type])
+  @@map("notifications")
+}
+
+enum NotificationType {
+  APPOINTMENT
+  PRESCRIPTION
+  PAYMENT
+  MEDICAL_RECORD
+  SYSTEM
 }

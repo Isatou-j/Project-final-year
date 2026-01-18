@@ -407,8 +407,8 @@ model Notification {
   type      NotificationType
   title     String
   message   String           @db.Text
-  link      String?
-  metadata  Json? // Store additional data as JSON
+  link      String?          @db.Text
+  metadata  Json? // Store additional data like appointmentId, etc.
   isRead    Boolean          @default(false)
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt

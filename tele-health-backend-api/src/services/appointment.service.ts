@@ -8,6 +8,7 @@ import {
   sendAppointmentConfirmationEmail,
   sendAppointmentCancellationEmail,
 } from './email.service';
+import * as notificationService from './notification.service';
 
 export interface AppointmentCreateInput {
   patientId: number;
@@ -106,6 +107,47 @@ export const bookAppointment = async (data: AppointmentCreateInput) => {
   } catch (emailError) {
     console.error('Failed to send appointment confirmation email:', emailError);
     // Don't throw - appointment was created successfully even if email failed
+  }
+
+  // Send real-time notification to patient
+  try {
+    const patientName = `${appointment.patient.firstName} ${appointment.patient.lastName}`;
+    const physicianName = `${appointment.physician.firstName} ${appointment.physician.lastName}`;
+    
+    await notificationService.createNotification({
+      userId: appointment.patient.userId,
+      type: 'APPOINTMENT',
+      title: 'Appointment Confirmed',
+      message: `Your appointment with Dr. ${physicianName} has been confirmed for ${appointment.appointmentDate.toLocaleDateString()}`,
+      link: '/patient/appointments',
+      metadata: {
+        appointmentId: appointment.id,
+        physicianId: appointment.physicianId,
+        appointmentDate: appointment.appointmentDate.toISOString(),
+      },
+    });
+  } catch (notificationError) {
+    console.error('Failed to send notification:', notificationError);
+  }
+
+  // Send notification to physician
+  try {
+    const patientName = `${appointment.patient.firstName} ${appointment.patient.lastName}`;
+    
+    await notificationService.createNotification({
+      userId: appointment.physician.userId,
+      type: 'APPOINTMENT',
+      title: 'New Appointment',
+      message: `New appointment with ${patientName} scheduled for ${appointment.appointmentDate.toLocaleDateString()}`,
+      link: '/physician/appointments',
+      metadata: {
+        appointmentId: appointment.id,
+        patientId: appointment.patientId,
+        appointmentDate: appointment.appointmentDate.toISOString(),
+      },
+    });
+  } catch (notificationError) {
+    console.error('Failed to send physician notification:', notificationError);
   }
 
   return appointment;

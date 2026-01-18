@@ -1,5 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 import apiClient from '@/utils/api-client';
+import { useSocket } from '@/providers/socket-provider';
 
 export interface Notification {
   id: number;
@@ -16,95 +19,109 @@ export interface Notification {
 
 export interface NotificationsResponse {
   notifications: Notification[];
+  total: number;
   unreadCount: number;
 }
 
-// For now, we'll generate notifications from appointments and other events
-// In a full implementation, you'd have a notifications table in the database
+// Real-time notifications using Socket.io and API
 export const useNotifications = () => {
-  return useQuery({
+  const { socket, isConnected } = useSocket();
+  const queryClient = useQueryClient();
+
+  const query = useQuery({
     queryKey: ['notifications'],
     queryFn: async () => {
-      // Generate notifications from appointments
       try {
-        const appointmentsResponse = await apiClient.get('/appointment/patient');
-        const appointments = appointmentsResponse.data.appointments || appointmentsResponse.data || [];
-        
-        // Generate notifications from recent appointments
-        const notifications: Notification[] = [];
-        const now = new Date();
-        
-        appointments.forEach((appointment: any) => {
-          const appointmentDate = new Date(appointment.appointmentDate);
-          const daysUntil = Math.floor((appointmentDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-          
-          // Notification for upcoming appointments (within 24 hours)
-          if (daysUntil >= 0 && daysUntil <= 1 && appointment.status === 'CONFIRMED') {
-            notifications.push({
-              id: appointment.id * 1000 + 1, // Generate unique ID
-              userId: 0, // Will be set by backend
-              type: 'APPOINTMENT',
-              title: 'Upcoming Appointment',
-              message: `You have an appointment with ${appointment.physician?.firstName || 'your doctor'} ${appointment.physician?.lastName || ''} on ${appointmentDate.toLocaleDateString()}`,
-              isRead: false,
-              link: `/patient/appointments`,
-              createdAt: appointment.createdAt,
-              updatedAt: appointment.updatedAt,
-            });
-          }
-          
-          // Notification for appointment status changes
-          if (appointment.status === 'CONFIRMED' && appointment.updatedAt) {
-            const updatedDate = new Date(appointment.updatedAt);
-            const hoursSinceUpdate = (now.getTime() - updatedDate.getTime()) / (1000 * 60 * 60);
-            
-            if (hoursSinceUpdate < 24) {
-              notifications.push({
-                id: appointment.id * 1000 + 2,
-                userId: 0,
-                type: 'APPOINTMENT',
-                title: 'Appointment Confirmed',
-                message: `Your appointment has been confirmed for ${appointmentDate.toLocaleDateString()}`,
-                isRead: false,
-                link: `/patient/appointments`,
-                createdAt: appointment.updatedAt,
-                updatedAt: appointment.updatedAt,
-              });
-            }
-          }
-        });
-        
-        // Sort by date (newest first)
-        notifications.sort((a, b) => 
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        );
-        
-        const unreadCount = notifications.filter(n => !n.isRead).length;
-        
-        return {
-          notifications: notifications.slice(0, 10), // Limit to 10 most recent
-          unreadCount,
-        } as NotificationsResponse;
+        const response = await apiClient.get('/notifications');
+        return response.data.data as NotificationsResponse;
       } catch (error) {
         console.error('Error fetching notifications:', error);
         return {
           notifications: [],
+          total: 0,
           unreadCount: 0,
         } as NotificationsResponse;
       }
     },
-    refetchInterval: 1000 * 60 * 5, // Refetch every 5 minutes
+    refetchInterval: 1000 * 60 * 5, // Refetch every 5 minutes as fallback
     staleTime: 1000 * 60 * 2, // 2 minutes
   });
+
+  // Listen for real-time notifications via Socket.io
+  useEffect(() => {
+    if (!socket || !isConnected) return;
+
+    const handleNewNotification = (notification: Notification) => {
+      console.log('📬 New notification received:', notification);
+      
+      // Update the query cache with the new notification
+      queryClient.setQueryData<NotificationsResponse>(['notifications'], (old) => {
+        if (!old) {
+          return {
+            notifications: [notification],
+            total: 1,
+            unreadCount: 1,
+          };
+        }
+
+        // Check if notification already exists (avoid duplicates)
+        const exists = old.notifications.some((n) => n.id === notification.id);
+        if (exists) {
+          return old;
+        }
+
+        // Add new notification at the beginning
+        const updatedNotifications = [notification, ...old.notifications];
+        const unreadCount = notification.isRead ? old.unreadCount : old.unreadCount + 1;
+
+        return {
+          notifications: updatedNotifications.slice(0, 50), // Keep only latest 50
+          total: old.total + 1,
+          unreadCount,
+        };
+      });
+
+      // Show toast notification
+      toast.info(notification.title, {
+        description: notification.message,
+        action: notification.link
+          ? {
+              label: 'View',
+              onClick: () => {
+                window.location.href = notification.link!;
+              },
+            }
+          : undefined,
+      });
+    };
+
+    socket.on('notification:new', handleNewNotification);
+
+    return () => {
+      socket.off('notification:new', handleNewNotification);
+    };
+  }, [socket, isConnected, queryClient]);
+
+  return {
+    ...query,
+    isConnected,
+  };
 };
 
 export const useMarkNotificationAsRead = () => {
   const queryClient = useQueryClient();
+  const { socket } = useSocket();
   
   return useMutation({
     mutationFn: async (notificationId: number) => {
       try {
         const response = await apiClient.patch(`/notifications/${notificationId}/read`);
+        
+        // Emit to socket for real-time update
+        if (socket) {
+          socket.emit('notification:read', notificationId);
+        }
+        
         return response.data;
       } catch (error) {
         console.error('Error marking notification as read:', error);

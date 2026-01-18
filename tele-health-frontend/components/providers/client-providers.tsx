@@ -2,6 +2,7 @@
 
 import { QueryProvider } from '@/providers/query-client-provider';
 import { SessionProvider } from 'next-auth/react';
+import { SocketProvider } from '@/providers/socket-provider';
 import { Toaster } from 'sonner';
 import { useEffect, useState } from 'react';
 
@@ -27,8 +28,10 @@ export function ClientProviders({ children }: ClientProvidersProps) {
   return (
     <SessionProvider>
       <QueryProvider>
-        {children}
-        <Toaster position='top-right' richColors />
+        <SocketProvider>
+          {children}
+          <Toaster position='top-right' richColors />
+        </SocketProvider>
       </QueryProvider>
     </SessionProvider>
   );
