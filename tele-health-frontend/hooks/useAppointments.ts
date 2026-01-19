@@ -33,12 +33,19 @@ export const useBookAppointment = () => {
 
 export interface Appointment {
   id: number;
+  physicianId?: number;
+  patientId?: number;
+  serviceId?: number;
   appointmentDate: string;
   startTime: string;
   endTime: string;
   status: 'PENDING' | 'CONFIRMED' | 'COMPLETED' | 'CANCELLED' | 'NO_SHOW';
   consultationType: ConsultationType;
   symptoms?: string;
+  meetingLink?: string;
+  calendarEventId?: string;
+  createdAt?: string;
+  updatedAt?: string;
   physician?: {
     id: number;
     firstName?: string;

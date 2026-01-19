@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Calendar, Clock, Video, Phone, MessageSquare } from 'lucide-react';
 import { format } from 'date-fns';
+import { Appointment } from '@/hooks/useAppointments';
 
 const STATUS_COLORS: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800',
@@ -39,27 +40,22 @@ const PatientAppointmentsPage = () => {
       }
     };
     refetchData();
-  }, []);
+  }, [refetch]);
 
   // Ensure appointments is always an array
-  const appointments = useMemo(() => {
+  const appointments = useMemo((): Appointment[] => {
     console.log('Raw data from usePatientAppointments:', data);
     if (!data) {
       console.log('No data from usePatientAppointments');
       return [];
     }
+    
+    // data is already Appointment[] from the hook
     if (Array.isArray(data)) {
       console.log('Data is array, length:', data.length);
       return data;
     }
-    if (Array.isArray(data.appointments)) {
-      console.log('Data has appointments array, length:', data.appointments.length);
-      return data.appointments;
-    }
-    if (Array.isArray(data.data)) {
-      console.log('Data has data array, length:', data.data.length);
-      return data.data;
-    }
+    
     console.log('Unknown data structure:', Object.keys(data || {}));
     return [];
   }, [data]);
@@ -126,7 +122,7 @@ const PatientAppointmentsPage = () => {
     [appointments],
   );
 
-  const renderAppointmentCard = (appointment: any) => {
+  const renderAppointmentCard = (appointment: Appointment) => {
     const physicianName = appointment.physician
       ? `Dr. ${appointment.physician.firstName ?? ''} ${
           appointment.physician.lastName ?? ''
@@ -269,4 +265,3 @@ const PatientAppointmentsPage = () => {
 };
 
 export default PatientAppointmentsPage;
-
