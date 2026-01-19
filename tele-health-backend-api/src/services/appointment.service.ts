@@ -9,6 +9,7 @@ import {
   sendAppointmentCancellationEmail,
 } from './email.service';
 import * as notificationService from './notification.service';
+import { generateMeetingLink } from './meeting.service';
 
 export interface AppointmentCreateInput {
   patientId: number;
@@ -85,6 +86,56 @@ export const bookAppointment = async (data: AppointmentCreateInput) => {
       service: true,
     },
   });
+
+  // Generate Google Meet link for online consultations (VIDEO and AUDIO)
+  if (consultationType === 'VIDEO' || consultationType === 'AUDIO') {
+    try {
+      console.log('📞 Generating Google Meet link for appointment:', appointment.id);
+      
+      const patientName = `${appointment.patient.firstName} ${appointment.patient.lastName}`;
+      const physicianName = `${appointment.physician.firstName} ${appointment.physician.lastName}`;
+      
+      const meetingResult = await generateMeetingLink({
+        appointmentId: appointment.id,
+        consultationType,
+        appointmentDate: appointment.appointmentDate,
+        startTime: appointment.startTime,
+        endTime: appointment.endTime,
+        patientName,
+        physicianName,
+      });
+
+      // Update appointment with meeting link and calendar event ID
+      await prisma.appointment.update({
+        where: { id: appointment.id },
+        data: {
+          meetingLink: meetingResult.meetingLink,
+          calendarEventId: meetingResult.calendarEventId || null,
+          meetingCreatedAt: meetingResult.meetingCreatedAt || null,
+        },
+      });
+
+      // Update the appointment object in memory
+      appointment.meetingLink = meetingResult.meetingLink;
+      if (meetingResult.calendarEventId) {
+        (appointment as any).calendarEventId = meetingResult.calendarEventId;
+      }
+      if (meetingResult.meetingCreatedAt) {
+        (appointment as any).meetingCreatedAt = meetingResult.meetingCreatedAt;
+      }
+      
+      console.log('✅ Google Meet link saved to database:', meetingResult.meetingLink);
+      if (meetingResult.calendarEventId) {
+        console.log('📅 Calendar Event ID saved:', meetingResult.calendarEventId);
+      }
+    } catch (error: any) {
+      console.error('❌ Error generating meeting link:', {
+        message: error?.message,
+        appointmentId: appointment.id,
+      });
+      // Continue without meeting link - appointment is still valid
+    }
+  }
 
   // Send confirmation email
   try {

@@ -119,9 +119,9 @@ const PatientConsultationsPage = () => {
             {app.status === 'CONFIRMED' && app.meetingLink && (
               <Button 
                 className='bg-teal-600 hover:bg-teal-700 text-white'
-                onClick={() => window.open(app.meetingLink!, '_blank')}
+                onClick={() => window.open(app.meetingLink!, '_blank', 'noopener,noreferrer')}
               >
-                Join Consultation
+                Join Video Consultation
               </Button>
             )}
             <Button variant='outline'>Details</Button>

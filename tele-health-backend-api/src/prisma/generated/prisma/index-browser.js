@@ -199,6 +199,8 @@ exports.Prisma.AppointmentScalarFieldEnum = {
   symptoms: 'symptoms',
   notes: 'notes',
   meetingLink: 'meetingLink',
+  calendarEventId: 'calendarEventId',
+  meetingCreatedAt: 'meetingCreatedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };

@@ -21,10 +21,12 @@ export const useBookAppointment = () => {
       const response = await apiClient.post('/appointment/book', data);
       return response.data;
     },
-    onSuccess: () => {
-      // Refresh any appointment-related queries
-      queryClient.invalidateQueries({ queryKey: ['appointments', 'patient'] });
-      queryClient.invalidateQueries({ queryKey: ['appointments'] });
+    onSuccess: async () => {
+      // Invalidate and refetch appointment-related queries
+      await queryClient.invalidateQueries({ queryKey: ['appointments', 'patient'] });
+      await queryClient.invalidateQueries({ queryKey: ['appointments'] });
+      // Force refetch to ensure fresh data
+      await queryClient.refetchQueries({ queryKey: ['appointments', 'patient'] });
     },
   });
 };
@@ -56,11 +58,28 @@ export interface Appointment {
 export const usePatientAppointments = () => {
   return useQuery({
     queryKey: ['appointments', 'patient'],
-    queryFn: async () => {
-      const response = await apiClient.get<{ appointments: Appointment[] }>(
-        '/appointment/patient',
-      );
-      return response.data.appointments ?? response.data;
+    queryFn: async (): Promise<Appointment[]> => {
+      try {
+        const response = await apiClient.get('/appointment/patient');
+        
+        // Handle different response structures
+        let appointments: Appointment[] = [];
+        
+        if (response.data) {
+          if (Array.isArray(response.data)) {
+            appointments = response.data;
+          } else if (Array.isArray(response.data.appointments)) {
+            appointments = response.data.appointments;
+          } else if (Array.isArray(response.data.data)) {
+            appointments = response.data.data;
+          }
+        }
+        
+        return appointments;
+      } catch (error) {
+        console.error('Error fetching patient appointments:', error);
+        return [];
+      }
     },
     staleTime: 1000 * 60 * 5,
   });

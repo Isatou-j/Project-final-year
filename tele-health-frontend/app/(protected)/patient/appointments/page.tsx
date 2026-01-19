@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePatientAppointments } from '@/hooks';
 import { Card, CardContent } from '@/components/ui/card';
@@ -28,17 +28,92 @@ const PatientAppointmentsPage = () => {
   const { data, isLoading, isError, refetch } = usePatientAppointments();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
 
-  const appointments = useMemo(() => data ?? [], [data]);
+  // Refetch appointments when component mounts or when coming from booking
+  useEffect(() => {
+    const refetchData = async () => {
+      try {
+        const result = await refetch();
+        console.log('Appointments refetched:', result.data);
+      } catch (error) {
+        console.error('Error refetching appointments:', error);
+      }
+    };
+    refetchData();
+  }, []);
+
+  // Ensure appointments is always an array
+  const appointments = useMemo(() => {
+    console.log('Raw data from usePatientAppointments:', data);
+    if (!data) {
+      console.log('No data from usePatientAppointments');
+      return [];
+    }
+    if (Array.isArray(data)) {
+      console.log('Data is array, length:', data.length);
+      return data;
+    }
+    if (Array.isArray(data.appointments)) {
+      console.log('Data has appointments array, length:', data.appointments.length);
+      return data.appointments;
+    }
+    if (Array.isArray(data.data)) {
+      console.log('Data has data array, length:', data.data.length);
+      return data.data;
+    }
+    console.log('Unknown data structure:', Object.keys(data || {}));
+    return [];
+  }, [data]);
 
   const upcomingAppointments = useMemo(
-    () =>
-      appointments.filter(app => {
-        const date = new Date(app.appointmentDate);
-        return (
-          date >= new Date() &&
-          (app.status === 'PENDING' || app.status === 'CONFIRMED')
-        );
-      }),
+    () => {
+      const filtered = appointments.filter(app => {
+        try {
+          // Use startTime if available, otherwise fall back to appointmentDate
+          const appointmentStartTime = app.startTime 
+            ? new Date(app.startTime) 
+            : new Date(app.appointmentDate);
+          const now = new Date();
+          
+          // Check if appointment is in the future
+          const isFuture = appointmentStartTime.getTime() > now.getTime();
+          
+          // Include if it's in the future and status is PENDING or CONFIRMED
+          const matchesStatus = app.status === 'PENDING' || app.status === 'CONFIRMED';
+          
+          const shouldInclude = isFuture && matchesStatus;
+          
+          if (!shouldInclude && appointments.length > 0) {
+            console.log('Appointment filtered out:', {
+              id: app.id,
+              startTime: app.startTime,
+              appointmentDate: app.appointmentDate,
+              status: app.status,
+              isFuture,
+              matchesStatus,
+              now: now.toISOString(),
+              appointmentTime: appointmentStartTime.toISOString(),
+            });
+          }
+          
+          return shouldInclude;
+        } catch (error) {
+          console.error('Error filtering appointment:', app, error);
+          return false;
+        }
+      });
+      
+      console.log('Filtering results:', {
+        total: appointments.length,
+        upcoming: filtered.length,
+        appointments: appointments.map(a => ({
+          id: a.id,
+          startTime: a.startTime,
+          status: a.status,
+        })),
+      });
+      
+      return filtered;
+    },
     [appointments],
   );
 
@@ -93,8 +168,13 @@ const PatientAppointmentsPage = () => {
             )}
           </div>
           <div className='flex gap-3'>
-            {appointment.status === 'CONFIRMED' && (
-              <Button className='bg-teal-600 hover:bg-teal-700 text-white'>Join Call</Button>
+            {appointment.status === 'CONFIRMED' && appointment.meetingLink && (
+              <Button 
+                className='bg-teal-600 hover:bg-teal-700 text-white'
+                onClick={() => window.open(appointment.meetingLink, '_blank', 'noopener,noreferrer')}
+              >
+                Join Video Consultation
+              </Button>
             )}
             <Button variant='outline'>View Details</Button>
           </div>

@@ -30,23 +30,40 @@ export const SocketProvider = ({ children }: SocketProviderProps) => {
     if (status === 'loading') return;
 
     if (status === 'authenticated' && session?.accessToken) {
-      // Initialize socket connection
-      const socketInstance = initializeSocket(session.accessToken as string);
-      setSocket(socketInstance);
+      try {
+        // Initialize socket connection
+        const socketInstance = initializeSocket(session.accessToken as string);
+        setSocket(socketInstance);
 
-      socketInstance.on('connect', () => {
-        setIsConnected(true);
-      });
+        const handleConnect = () => {
+          setIsConnected(true);
+        };
 
-      socketInstance.on('disconnect', () => {
+        const handleDisconnect = () => {
+          setIsConnected(false);
+        };
+
+        const handleError = (error: Error) => {
+          // Silently handle connection errors - socket will retry automatically
+          console.warn('Socket connection issue:', error.message);
+        };
+
+        socketInstance.on('connect', handleConnect);
+        socketInstance.on('disconnect', handleDisconnect);
+        socketInstance.on('connect_error', handleError);
+
+        return () => {
+          socketInstance.off('connect', handleConnect);
+          socketInstance.off('disconnect', handleDisconnect);
+          socketInstance.off('connect_error', handleError);
+          disconnectSocket();
+          setSocket(null);
+          setIsConnected(false);
+        };
+      } catch (error) {
+        console.error('Error initializing socket:', error);
         setIsConnected(false);
-      });
-
-      return () => {
-        disconnectSocket();
-        setSocket(null);
-        setIsConnected(false);
-      };
+      }
     } else {
       // Disconnect if not authenticated
       disconnectSocket();

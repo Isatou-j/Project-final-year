@@ -92,7 +92,8 @@ const PhysicianConsultationRoomPage = () => {
 
   const handleJoin = (appointment: PhysicianAppointment) => {
     if (appointment.meetingLink) {
-      window.open(appointment.meetingLink, '_blank');
+      // Open Google Meet in a new tab
+      window.open(appointment.meetingLink, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -155,7 +156,7 @@ const PhysicianConsultationRoomPage = () => {
               onClick={() => handleJoin(app)}
             >
               <Video className='w-4 h-4 mr-2' />
-              {canJoin ? 'Join Consultation' : 'Waiting for confirmation'}
+              {canJoin ? 'Join Video Consultation' : 'Waiting for confirmation'}
               {canJoin && <ExternalLink className='w-3 h-3 ml-2' />}
             </Button>
           </div>

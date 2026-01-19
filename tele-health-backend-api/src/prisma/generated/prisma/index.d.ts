@@ -7851,6 +7851,8 @@ export namespace Prisma {
     symptoms: string | null
     notes: string | null
     meetingLink: string | null
+    calendarEventId: string | null
+    meetingCreatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7868,6 +7870,8 @@ export namespace Prisma {
     symptoms: string | null
     notes: string | null
     meetingLink: string | null
+    calendarEventId: string | null
+    meetingCreatedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -7885,6 +7889,8 @@ export namespace Prisma {
     symptoms: number
     notes: number
     meetingLink: number
+    calendarEventId: number
+    meetingCreatedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -7918,6 +7924,8 @@ export namespace Prisma {
     symptoms?: true
     notes?: true
     meetingLink?: true
+    calendarEventId?: true
+    meetingCreatedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7935,6 +7943,8 @@ export namespace Prisma {
     symptoms?: true
     notes?: true
     meetingLink?: true
+    calendarEventId?: true
+    meetingCreatedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -7952,6 +7962,8 @@ export namespace Prisma {
     symptoms?: true
     notes?: true
     meetingLink?: true
+    calendarEventId?: true
+    meetingCreatedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -8056,6 +8068,8 @@ export namespace Prisma {
     symptoms: string | null
     notes: string | null
     meetingLink: string | null
+    calendarEventId: string | null
+    meetingCreatedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: AppointmentCountAggregateOutputType | null
@@ -8092,6 +8106,8 @@ export namespace Prisma {
     symptoms?: boolean
     notes?: boolean
     meetingLink?: boolean
+    calendarEventId?: boolean
+    meetingCreatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     patient?: boolean | PatientDefaultArgs<ExtArgs>
@@ -8114,6 +8130,8 @@ export namespace Prisma {
     symptoms?: boolean
     notes?: boolean
     meetingLink?: boolean
+    calendarEventId?: boolean
+    meetingCreatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     patient?: boolean | PatientDefaultArgs<ExtArgs>
@@ -8134,6 +8152,8 @@ export namespace Prisma {
     symptoms?: boolean
     notes?: boolean
     meetingLink?: boolean
+    calendarEventId?: boolean
+    meetingCreatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     patient?: boolean | PatientDefaultArgs<ExtArgs>
@@ -8154,11 +8174,13 @@ export namespace Prisma {
     symptoms?: boolean
     notes?: boolean
     meetingLink?: boolean
+    calendarEventId?: boolean
+    meetingCreatedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "physicianId" | "serviceId" | "appointmentDate" | "startTime" | "endTime" | "status" | "consultationType" | "symptoms" | "notes" | "meetingLink" | "createdAt" | "updatedAt", ExtArgs["result"]["appointment"]>
+  export type AppointmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "patientId" | "physicianId" | "serviceId" | "appointmentDate" | "startTime" | "endTime" | "status" | "consultationType" | "symptoms" | "notes" | "meetingLink" | "calendarEventId" | "meetingCreatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["appointment"]>
   export type AppointmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     patient?: boolean | PatientDefaultArgs<ExtArgs>
     physician?: boolean | PhysicianDefaultArgs<ExtArgs>
@@ -8199,6 +8221,8 @@ export namespace Prisma {
       symptoms: string | null
       notes: string | null
       meetingLink: string | null
+      calendarEventId: string | null
+      meetingCreatedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["appointment"]>
@@ -8641,6 +8665,8 @@ export namespace Prisma {
     readonly symptoms: FieldRef<"Appointment", 'String'>
     readonly notes: FieldRef<"Appointment", 'String'>
     readonly meetingLink: FieldRef<"Appointment", 'String'>
+    readonly calendarEventId: FieldRef<"Appointment", 'String'>
+    readonly meetingCreatedAt: FieldRef<"Appointment", 'DateTime'>
     readonly createdAt: FieldRef<"Appointment", 'DateTime'>
     readonly updatedAt: FieldRef<"Appointment", 'DateTime'>
   }
@@ -23940,6 +23966,8 @@ export namespace Prisma {
     symptoms: 'symptoms',
     notes: 'notes',
     meetingLink: 'meetingLink',
+    calendarEventId: 'calendarEventId',
+    meetingCreatedAt: 'meetingCreatedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -24840,6 +24868,8 @@ export namespace Prisma {
     symptoms?: StringNullableFilter<"Appointment"> | string | null
     notes?: StringNullableFilter<"Appointment"> | string | null
     meetingLink?: StringNullableFilter<"Appointment"> | string | null
+    calendarEventId?: StringNullableFilter<"Appointment"> | string | null
+    meetingCreatedAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null
     createdAt?: DateTimeFilter<"Appointment"> | Date | string
     updatedAt?: DateTimeFilter<"Appointment"> | Date | string
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput>
@@ -24862,6 +24892,8 @@ export namespace Prisma {
     symptoms?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     meetingLink?: SortOrderInput | SortOrder
+    calendarEventId?: SortOrderInput | SortOrder
+    meetingCreatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     patient?: PatientOrderByWithRelationInput
@@ -24887,6 +24919,8 @@ export namespace Prisma {
     symptoms?: StringNullableFilter<"Appointment"> | string | null
     notes?: StringNullableFilter<"Appointment"> | string | null
     meetingLink?: StringNullableFilter<"Appointment"> | string | null
+    calendarEventId?: StringNullableFilter<"Appointment"> | string | null
+    meetingCreatedAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null
     createdAt?: DateTimeFilter<"Appointment"> | Date | string
     updatedAt?: DateTimeFilter<"Appointment"> | Date | string
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput>
@@ -24909,6 +24943,8 @@ export namespace Prisma {
     symptoms?: SortOrderInput | SortOrder
     notes?: SortOrderInput | SortOrder
     meetingLink?: SortOrderInput | SortOrder
+    calendarEventId?: SortOrderInput | SortOrder
+    meetingCreatedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: AppointmentCountOrderByAggregateInput
@@ -24934,6 +24970,8 @@ export namespace Prisma {
     symptoms?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
     notes?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
     meetingLink?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
+    calendarEventId?: StringNullableWithAggregatesFilter<"Appointment"> | string | null
+    meetingCreatedAt?: DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Appointment"> | Date | string
   }
@@ -26372,6 +26410,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     patient: PatientCreateNestedOneWithoutAppointmentsInput
@@ -26394,6 +26434,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     payment?: PaymentUncheckedCreateNestedOneWithoutAppointmentInput
@@ -26409,6 +26451,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -26431,6 +26475,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payment?: PaymentUncheckedUpdateOneWithoutAppointmentNestedInput
@@ -26450,6 +26496,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -26463,6 +26511,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26480,6 +26530,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28049,6 +28101,8 @@ export namespace Prisma {
     symptoms?: SortOrder
     notes?: SortOrder
     meetingLink?: SortOrder
+    calendarEventId?: SortOrder
+    meetingCreatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -28073,6 +28127,8 @@ export namespace Prisma {
     symptoms?: SortOrder
     notes?: SortOrder
     meetingLink?: SortOrder
+    calendarEventId?: SortOrder
+    meetingCreatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -28090,6 +28146,8 @@ export namespace Prisma {
     symptoms?: SortOrder
     notes?: SortOrder
     meetingLink?: SortOrder
+    calendarEventId?: SortOrder
+    meetingCreatedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -30638,6 +30696,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     physician: PhysicianCreateNestedOneWithoutAppointmentsInput
@@ -30658,6 +30718,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     payment?: PaymentUncheckedCreateNestedOneWithoutAppointmentInput
@@ -30795,6 +30857,8 @@ export namespace Prisma {
     symptoms?: StringNullableFilter<"Appointment"> | string | null
     notes?: StringNullableFilter<"Appointment"> | string | null
     meetingLink?: StringNullableFilter<"Appointment"> | string | null
+    calendarEventId?: StringNullableFilter<"Appointment"> | string | null
+    meetingCreatedAt?: DateTimeNullableFilter<"Appointment"> | Date | string | null
     createdAt?: DateTimeFilter<"Appointment"> | Date | string
     updatedAt?: DateTimeFilter<"Appointment"> | Date | string
   }
@@ -30892,6 +30956,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     patient: PatientCreateNestedOneWithoutAppointmentsInput
@@ -30912,6 +30978,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     payment?: PaymentUncheckedCreateNestedOneWithoutAppointmentInput
@@ -31601,6 +31669,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     patient: PatientCreateNestedOneWithoutAppointmentsInput
@@ -31621,6 +31691,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     payment?: PaymentUncheckedCreateNestedOneWithoutAppointmentInput
@@ -31756,6 +31828,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     patient: PatientCreateNestedOneWithoutAppointmentsInput
@@ -31777,6 +31851,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     prescription?: PrescriptionUncheckedCreateNestedOneWithoutAppointmentInput
@@ -31839,6 +31915,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -31860,6 +31938,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     prescription?: PrescriptionUncheckedUpdateOneWithoutAppointmentNestedInput
@@ -32196,6 +32276,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     patient: PatientCreateNestedOneWithoutAppointmentsInput
@@ -32217,6 +32299,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     payment?: PaymentUncheckedCreateNestedOneWithoutAppointmentInput
@@ -32247,6 +32331,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -32268,6 +32354,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payment?: PaymentUncheckedUpdateOneWithoutAppointmentNestedInput
@@ -32882,6 +32970,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -32905,6 +32995,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     physician?: PhysicianUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -32925,6 +33017,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payment?: PaymentUncheckedUpdateOneWithoutAppointmentNestedInput
@@ -32943,6 +33037,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -32988,6 +33084,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33019,6 +33117,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -33039,6 +33139,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payment?: PaymentUncheckedUpdateOneWithoutAppointmentNestedInput
@@ -33057,6 +33159,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -33125,6 +33229,8 @@ export namespace Prisma {
     symptoms?: string | null
     notes?: string | null
     meetingLink?: string | null
+    calendarEventId?: string | null
+    meetingCreatedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -33138,6 +33244,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     patient?: PatientUpdateOneRequiredWithoutAppointmentsNestedInput
@@ -33158,6 +33266,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     payment?: PaymentUncheckedUpdateOneWithoutAppointmentNestedInput
@@ -33176,6 +33286,8 @@ export namespace Prisma {
     symptoms?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     meetingLink?: NullableStringFieldUpdateOperationsInput | string | null
+    calendarEventId?: NullableStringFieldUpdateOperationsInput | string | null
+    meetingCreatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -30,21 +30,45 @@ export const useNotifications = () => {
 
   const query = useQuery({
     queryKey: ['notifications'],
-    queryFn: async () => {
+    queryFn: async (): Promise<NotificationsResponse> => {
       try {
         const response = await apiClient.get('/notifications');
-        return response.data.data as NotificationsResponse;
-      } catch (error) {
-        console.error('Error fetching notifications:', error);
+        
+        // Handle different response structures
+        const responseData = response.data?.data || response.data;
+        
+        if (responseData && typeof responseData === 'object') {
+          return {
+            notifications: responseData.notifications || [],
+            total: responseData.total || 0,
+            unreadCount: responseData.unreadCount || 0,
+          } as NotificationsResponse;
+        }
+        
+        // Fallback if response structure is unexpected
         return {
           notifications: [],
           total: 0,
           unreadCount: 0,
-        } as NotificationsResponse;
+        };
+      } catch (error: any) {
+        // Silently handle network errors - don't spam console
+        // Only log if it's not a network/connection error
+        if (error?.code !== 'ERR_NETWORK' && error?.code !== 'ECONNREFUSED') {
+          console.error('Error fetching notifications:', error);
+        }
+        // Always return a valid object, never undefined
+        return {
+          notifications: [],
+          total: 0,
+          unreadCount: 0,
+        };
       }
     },
     refetchInterval: 1000 * 60 * 5, // Refetch every 5 minutes as fallback
     staleTime: 1000 * 60 * 2, // 2 minutes
+    retry: 1, // Only retry once to avoid spamming failed requests
+    retryDelay: 2000, // Wait 2 seconds before retry
   });
 
   // Listen for real-time notifications via Socket.io

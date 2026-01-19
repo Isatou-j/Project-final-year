@@ -10,6 +10,7 @@ import { toast } from 'sonner';
 
 import { usePublicPhysicians, useBookAppointment } from '@/hooks';
 import type { ConsultationType } from '@/hooks/useAppointments';
+import { formatCurrency } from '@/utils/currency';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -98,14 +99,17 @@ const BookAppointmentPage = () => {
     );
     if (!p) return null;
     // Normalize shape between ExpertPhysician (landing) and API physicians
-    return {
-      id: p.id,
-      firstName: p.firstName ?? p.name?.split(' ')?.[0] ?? '',
-      lastName:
-        p.lastName ??
+    // Remove any existing "Dr." prefix to avoid duplication
+    const firstName = (p.firstName ?? p.name?.split(' ')?.[0] ?? '').replace(/^Dr\.?\s*/i, '');
+    const lastName = (p.lastName ??
         (p.name?.split(' ').length > 1
           ? p.name?.split(' ').slice(1).join(' ')
-          : ''),
+          : '')).replace(/^Dr\.?\s*/i, '');
+    
+    return {
+      id: p.id,
+      firstName,
+      lastName,
       specialization: p.specialization ?? p.specialty ?? 'General Physician',
       consultationFee:
         p.consultationFee ??
@@ -145,7 +149,15 @@ const BookAppointmentPage = () => {
         data.startTime,
       );
 
-      await bookAppointment.mutateAsync({
+      console.log('📅 Booking appointment with data:', {
+        physicianId: data.physicianId,
+        serviceId: data.serviceId,
+        appointmentDate: startIso,
+        startTime: startIso,
+        endTime: endIso,
+      });
+
+      const result = await bookAppointment.mutateAsync({
         physicianId: parseInt(data.physicianId, 10),
         serviceId: parseInt(data.serviceId, 10),
         appointmentDate: startIso,
@@ -154,6 +166,8 @@ const BookAppointmentPage = () => {
         consultationType: data.consultationType as ConsultationType,
         symptoms: data.symptoms || undefined,
       });
+
+      console.log('✅ Appointment booked successfully:', result);
 
       toast.success('Appointment booked successfully');
       setIsSubmitted(true);
@@ -165,14 +179,28 @@ const BookAppointmentPage = () => {
         consultationType: 'VIDEO',
         symptoms: '',
       });
-      // Navigate to appointments after a short delay
-      setTimeout(() => router.push('/patient/appointments'), 1500);
+      
+      // Wait for query invalidation/refetch to complete, then navigate
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      router.push('/patient/appointments');
     } catch (err: any) {
-      toast.error(
-        err?.response?.data?.message ||
-          err?.message ||
-          'Failed to book appointment. Please try again.',
-      );
+      console.error('❌ Appointment booking error:', {
+        message: err?.message,
+        response: err?.response?.data,
+        status: err?.response?.status,
+        statusText: err?.response?.statusText,
+      });
+      
+      const errorMessage = err?.response?.data?.message ||
+        err?.message ||
+        'Failed to book appointment. Please try again.';
+      
+      toast.error(errorMessage);
+      
+      // If it's an auth error, suggest re-login
+      if (err?.response?.status === 401) {
+        toast.error('Your session may have expired. Please try logging in again.');
+      }
     }
   };
 
@@ -251,7 +279,13 @@ const BookAppointmentPage = () => {
                     onValueChange={value => setValue('physicianId', value)}
                   >
                     <SelectTrigger className='h-11'>
-                      <SelectValue placeholder='Choose a doctor' />
+                      <SelectValue placeholder='Choose a doctor'>
+                        {selectedPhysician ? (
+                          `Dr. ${selectedPhysician.firstName} ${selectedPhysician.lastName} — ${selectedPhysician.specialization}`
+                        ) : (
+                          'Choose a doctor'
+                        )}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {physiciansLoading ? (
@@ -259,11 +293,35 @@ const BookAppointmentPage = () => {
                           <Loader2 className='w-5 h-5 animate-spin mx-auto' />
                         </div>
                       ) : physiciansData?.physicians?.length ? (
-                        physiciansData.physicians.map((p: any) => (
-                          <SelectItem key={p.id} value={p.id.toString()}>
-                            Dr. {p.firstName} {p.lastName} — {p.specialization}
-                          </SelectItem>
-                        ))
+                        physiciansData.physicians.map((p: any) => {
+                          // Handle both ExpertPhysician (name field) and regular Physician (firstName/lastName)
+                          let firstName = '';
+                          let lastName = '';
+                          let specialization = '';
+                          
+                          if (p.name) {
+                            // ExpertPhysician type - has 'name' field
+                            const nameParts = p.name.replace(/^Dr\.?\s*/i, '').split(' ');
+                            firstName = nameParts[0] || '';
+                            lastName = nameParts.slice(1).join(' ') || '';
+                            specialization = p.specialty || 'General Physician';
+                          } else {
+                            // Regular Physician type - has firstName/lastName
+                            firstName = (p.firstName || '').replace(/^Dr\.?\s*/i, '');
+                            lastName = (p.lastName || '').replace(/^Dr\.?\s*/i, '');
+                            specialization = p.specialization || p.specialty || 'General Physician';
+                          }
+                          
+                          const displayName = firstName && lastName 
+                            ? `${firstName} ${lastName}` 
+                            : firstName || lastName || 'Unknown Doctor';
+                          
+                          return (
+                            <SelectItem key={p.id} value={p.id.toString()}>
+                              Dr. {displayName} — {specialization}
+                            </SelectItem>
+                          );
+                        })
                       ) : (
                         <SelectItem value='none' disabled>
                           No doctors available
@@ -508,10 +566,9 @@ const BookAppointmentPage = () => {
                   <div className='pt-3 border-t'>
                     <p className='text-xs text-gray-500'>Estimated fee</p>
                     <p className='text-xl font-bold text-teal-600'>
-                      $
-                      {Number(
+                      {formatCurrency(
                         selectedPhysician.consultationFee || 0,
-                      ).toFixed(2)}
+                      )}
                     </p>
                   </div>
                 </>

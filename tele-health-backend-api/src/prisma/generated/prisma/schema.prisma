@@ -154,7 +154,10 @@ model Appointment {
   consultationType ConsultationType  @default(VIDEO)
   symptoms         String?
   notes            String?
-  meetingLink      String?
+  // Google Meet fields
+  meetingLink      String?           @db.Text
+  calendarEventId  String?           @db.VarChar(255) // Google Calendar event ID
+  meetingCreatedAt DateTime? // When the meeting was created
   payment          Payment?
   prescription     Prescription?
   createdAt        DateTime          @default(now())
@@ -165,6 +168,7 @@ model Appointment {
   @@index([physicianId])
   @@index([appointmentDate])
   @@index([status])
+  @@index([calendarEventId])
   @@map("appointments")
 }
 

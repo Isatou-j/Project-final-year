@@ -695,7 +695,7 @@ const TeleHealthLanding = () => {
                         </div>
                         <div className='flex items-center justify-between pt-4 border-t'>
                           <span className='text-lg font-bold text-teal-600'>
-                            ${doctor.fee || '50'}
+                            GMD {typeof doctor.fee === 'string' ? parseFloat(doctor.fee.replace(/[^0-9.]/g, '')) || 50 : (doctor.fee || 50)}
                           </span>
                           <Drawer>
                             <DrawerTrigger asChild>
@@ -713,7 +713,7 @@ const TeleHealthLanding = () => {
                                   Book Appointment with {doctor.name}
                                 </DrawerTitle>
                                 <DrawerDescription>
-                                  {doctor.specialty} - ${doctor.fee || '50'} per
+                                  {doctor.specialty} - GMD {typeof doctor.fee === 'string' ? parseFloat(doctor.fee.replace(/[^0-9.]/g, '')) || 50 : (doctor.fee || 50)} per
                                   consultation
                                 </DrawerDescription>
                               </DrawerHeader>
@@ -809,7 +809,7 @@ const TeleHealthLanding = () => {
                               </div>
                               <DrawerFooter>
                                 <Button className='w-full bg-teal-600  hover:from-teal-700 hover:to-teal-700'>
-                                  Confirm Booking - ${doctor.fee || '50'}
+                                  Confirm Booking - GMD {typeof doctor.fee === 'string' ? parseFloat(doctor.fee.replace(/[^0-9.]/g, '')) || 50 : (doctor.fee || 50)}
                                 </Button>
                                 <DrawerClose asChild>
                                   <Button variant='outline'>Cancel</Button>
@@ -871,7 +871,7 @@ const TeleHealthLanding = () => {
                         </div>
                         <div className='flex items-center justify-between pt-4 border-t'>
                           <span className='text-lg font-bold text-teal-600'>
-                            {doctor.fee}
+                            GMD {typeof doctor.fee === 'string' ? parseFloat(doctor.fee.replace(/[^0-9.]/g, '')) || 50 : (doctor.fee || 50)}
                           </span>
                           <Drawer>
                             <DrawerTrigger asChild>
@@ -889,7 +889,7 @@ const TeleHealthLanding = () => {
                                   Book Appointment with {doctor.name}
                                 </DrawerTitle>
                                 <DrawerDescription>
-                                  {doctor.specialty} - {doctor.fee} per
+                                  {doctor.specialty} - GMD {typeof doctor.fee === 'string' ? parseFloat(doctor.fee.replace(/[^0-9.]/g, '')) || 50 : (doctor.fee || 50)} per
                                   consultation
                                 </DrawerDescription>
                               </DrawerHeader>
@@ -985,7 +985,7 @@ const TeleHealthLanding = () => {
                               </div>
                               <DrawerFooter>
                                 <Button className='w-full bg-teal-600  hover:from-teal-700 hover:to-teal-700'>
-                                  Confirm Booking - {doctor.fee}
+                                  Confirm Booking - GMD {typeof doctor.fee === 'string' ? parseFloat(doctor.fee.replace(/[^0-9.]/g, '')) || 50 : (doctor.fee || 50)}
                                 </Button>
                                 <DrawerClose asChild>
                                   <Button variant='outline'>Cancel</Button>

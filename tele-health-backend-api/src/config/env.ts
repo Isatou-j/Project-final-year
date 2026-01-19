@@ -45,6 +45,12 @@ const envSchema = z.object({
   Resend_API_KEY: z.string().optional(),
   RESEND_API_KEY: z.string().optional(), // Alternative naming
   RESEND_FROM_EMAIL: z.string().email().optional(),
+  // Google Calendar API Configuration (for Google Meet links)
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
+  GOOGLE_REDIRECT_URI: z.string().optional(),
+  GOOGLE_REFRESH_TOKEN: z.string().optional(),
+  GOOGLE_CALENDAR_ID: z.string().optional(), // Defaults to 'primary' if not set
 });
 
 const validateEnv = () => {
@@ -72,6 +78,11 @@ const validateEnv = () => {
       Resend_API_KEY: process.env.Resend_API_KEY || process.env.RESEND_API_KEY,
       RESEND_API_KEY: process.env.RESEND_API_KEY || process.env.Resend_API_KEY,
       RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
+      GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+      GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+      GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,
+      GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
+      GOOGLE_CALENDAR_ID: process.env.GOOGLE_CALENDAR_ID,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {

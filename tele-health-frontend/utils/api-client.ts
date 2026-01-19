@@ -49,18 +49,40 @@ class ApiClient {
     // Request interceptor
     this.client.interceptors.request.use(
       async (config: InternalAxiosRequestConfig) => {
-        const session = await getSession();
-        if (session?.accessToken) {
-          config.headers.Authorization = `Bearer ${session.accessToken}`;
-        }
-        
-        // Log request URL for debugging (only in development)
-        if (process.env.NODE_ENV === 'development') {
-          console.log('API Request:', {
-            method: config.method?.toUpperCase(),
-            url: config.url,
-            fullUrl: `${config.baseURL}${config.url}`,
-          });
+        try {
+          const session = await getSession();
+          
+          // Enhanced logging for debugging authentication issues
+          if (process.env.NODE_ENV === 'development') {
+            console.log('🔐 Session check:', {
+              hasSession: !!session,
+              hasAccessToken: !!(session?.accessToken),
+              accessTokenLength: session?.accessToken?.length || 0,
+              url: config.url,
+            });
+          }
+          
+          if (session?.accessToken) {
+            config.headers.Authorization = `Bearer ${session.accessToken}`;
+          } else {
+            console.warn('⚠️ No access token in session for request:', config.url);
+            // Don't proceed without token for protected routes
+            if (config.url && !config.url.includes('/auth/')) {
+              console.error('❌ Missing authentication token for protected route:', config.url);
+            }
+          }
+          
+          // Log request URL for debugging (only in development)
+          if (process.env.NODE_ENV === 'development') {
+            console.log('API Request:', {
+              method: config.method?.toUpperCase(),
+              url: config.url,
+              fullUrl: `${config.baseURL}${config.url}`,
+              hasAuth: !!config.headers.Authorization,
+            });
+          }
+        } catch (error) {
+          console.error('❌ Error getting session in request interceptor:', error);
         }
         
         return config;
@@ -124,21 +146,28 @@ class ApiClient {
     try {
       const session = await getSession();
       if (!session?.refreshToken) {
+        console.error('❌ No refresh token available in session');
         throw new Error('No refresh token available');
       }
 
-      const response = await axios.post('/api/v1/auth/refresh-token', {
+      // Use the correct refresh endpoint
+      const response = await axios.post('/api/auth/refresh', {
         refreshToken: session.refreshToken,
       });
 
       const { accessToken } = response.data;
 
-      // Update the session with new token
-      // Note: This might require triggering a session update
-      // For now, we'll return the new token and rely on the interceptor
+      if (!accessToken) {
+        throw new Error('No access token in refresh response');
+      }
 
+      console.log('✅ Token refreshed successfully');
       return accessToken;
-    } catch (error) {
+    } catch (error: any) {
+      console.error('❌ Token refresh failed:', {
+        message: error.message,
+        response: error.response?.data,
+      });
       throw error;
     }
   }

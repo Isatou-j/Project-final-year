@@ -638,7 +638,11 @@ export const verifyUserEmail = async (
 
   const user = await prisma.user.update({
     where: { id: userId },
-    data: { isVerified: true, verifiedAt: new Date() },
+    data: { 
+      isVerified: true, 
+      isActive: true, // Activate account upon successful verification
+      verifiedAt: new Date() 
+    },
     include: {
       patient: true,
       physician: true,

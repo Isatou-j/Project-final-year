@@ -78,7 +78,17 @@ const PatientProfilePage = () => {
   useEffect(() => {
     if (profile) {
       const dateOfBirth = profile.dateOfBirth
-        ? format(new Date(profile.dateOfBirth), 'yyyy-MM-dd')
+        ? (() => {
+            try {
+              const date = new Date(profile.dateOfBirth);
+              if (isNaN(date.getTime())) {
+                return '';
+              }
+              return format(date, 'yyyy-MM-dd');
+            } catch {
+              return '';
+            }
+          })()
         : '';
       
       form.reset({
@@ -162,7 +172,7 @@ const PatientProfilePage = () => {
                     <FormItem>
                       <FormLabel>First Name</FormLabel>
                       <FormControl>
-                        <Input placeholder='John' {...field} />
+                        <Input placeholder='Yankuba' {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -176,7 +186,7 @@ const PatientProfilePage = () => {
                     <FormItem>
                       <FormLabel>Last Name</FormLabel>
                       <FormControl>
-                        <Input placeholder='Doe' {...field} />
+                        <Input placeholder='Jabbie' {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -479,7 +489,19 @@ const PatientProfilePage = () => {
               <div>
                 <Label>Member Since</Label>
                 <p className='text-sm text-gray-600 mt-1'>
-                  {format(new Date(profile.createdAt), 'MMMM dd, yyyy')}
+                  {profile.createdAt
+                    ? (() => {
+                        try {
+                          const date = new Date(profile.createdAt);
+                          if (isNaN(date.getTime())) {
+                            return 'N/A';
+                          }
+                          return format(date, 'MMMM dd, yyyy');
+                        } catch {
+                          return 'N/A';
+                        }
+                      })()
+                    : 'N/A'}
                 </p>
               </div>
             </CardContent>

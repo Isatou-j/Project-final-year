@@ -252,11 +252,13 @@ const FindDoctorsPage = () => {
             const rating = physician.rating ?? 4.5;
             const experience = physician.experience ?? '5';
             const patients = physician.patients ?? '100+';
-            const feeRaw = physician.consultationFee ?? physician.fee ?? '$50';
-            const fee =
-              typeof feeRaw === 'number'
-                ? `$${feeRaw.toFixed(2)}`
-                : feeRaw || '$50';
+            const feeRaw = physician.consultationFee ?? physician.fee ?? 50;
+            const feeAmount = typeof feeRaw === 'number' 
+              ? feeRaw 
+              : typeof feeRaw === 'string' 
+                ? parseFloat(feeRaw.replace(/[^0-9.]/g, '')) || 50 
+                : 50;
+            const fee = `GMD ${feeAmount.toFixed(2)}`;
 
             return (
               <Card

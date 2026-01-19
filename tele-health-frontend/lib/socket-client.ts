@@ -29,7 +29,10 @@ export const initializeSocket = (token: string): Socket => {
   });
 
   socket.on('connect_error', (error) => {
-    console.error('❌ Socket.io connection error:', error);
+    // Only log error if it's not just a reconnection attempt
+    if (!error.message.includes('xhr poll error')) {
+      console.warn('⚠️ Socket.io connection error:', error.message);
+    }
   });
 
   return socket;
