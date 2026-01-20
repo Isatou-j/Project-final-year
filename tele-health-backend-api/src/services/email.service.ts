@@ -1,18 +1,40 @@
-//import nodemailer from 'nodemailer';
-import { Resend } from 'resend';
-const resend = new Resend(process.env.Resend_API_KEY || process.env.RESEND_API_KEY);
-/**const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT),
-  secure: false,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});*/
+import sgMail from '@sendgrid/mail';
+import { env } from '../config/env';
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+// Check for required environment variables
+const requiredEnvVars = ['SENDGRID_API_KEY'];
+const missingVars = requiredEnvVars.filter(varName => !process.env[varName] && !env.SENDGRID_API_KEY);
+
+if (missingVars.length > 0) {
+  console.error(`❌ Missing environment variables: ${missingVars.join(', ')}`);
+}
+
+// Set SendGrid API key
+const SENDGRID_API_KEY = env.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY;
+const SENDGRID_FROM_EMAIL = env.SENDGRID_FROM_EMAIL || env.EMAIL_FROM || process.env.SENDGRID_FROM_EMAIL || process.env.EMAIL_FROM;
+
+if (SENDGRID_API_KEY) {
+  sgMail.setApiKey(SENDGRID_API_KEY);
+}
+
+// Verify connection by checking if API key is set
+if (process.env.SENDGRID_API_KEY || env.SENDGRID_API_KEY) {
+  console.log('✅ SendGrid API key configured');
+} else {
+  console.error('❌ SendGrid API key not configured');
+}
+
+const FRONTEND_URL = env.FRONTEND_URL || process.env.FRONTEND_URL || 'http://localhost:3000';
+
+// Helper function to ensure SendGrid is initialized before sending
+function ensureSendGridInitialized() {
+  const apiKey = env.SENDGRID_API_KEY || process.env.SENDGRID_API_KEY;
+  // Always set the API key if available (setApiKey is safe to call multiple times)
+  if (apiKey) {
+    sgMail.setApiKey(apiKey);
+  }
+  return apiKey;
+}
 
 // Generic email sender with code
 export async function sendEmail({
@@ -29,31 +51,32 @@ export async function sendEmail({
   expiresAt?: string;
 }) {
   try {
-    // Check if Resend is configured
-    const apiKey = process.env.Resend_API_KEY || process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM_EMAIL;
+    // Ensure SendGrid is initialized
+    const apiKey = ensureSendGridInitialized();
+    const fromEmail = env.SENDGRID_FROM_EMAIL || env.EMAIL_FROM || SENDGRID_FROM_EMAIL;
 
     if (!apiKey) {
-      console.error('❌ RESEND_API_KEY is not set in environment variables');
-      throw new Error('Email service not configured: RESEND_API_KEY is missing');
+      console.error('❌ SENDGRID_API_KEY is not set in environment variables');
+      throw new Error('Email service not configured: SENDGRID_API_KEY is missing');
     }
 
     if (!fromEmail) {
-      console.error('❌ RESEND_FROM_EMAIL is not set in environment variables');
-      throw new Error('Email service not configured: RESEND_FROM_EMAIL is missing');
+      console.error('❌ SENDGRID_FROM_EMAIL is not set in environment variables');
+      throw new Error('Email service not configured: SENDGRID_FROM_EMAIL is missing');
     }
 
-    console.log('📧 Attempting to send email:', {
+    console.log('\n📧 ============================================');
+    console.log('📧 ATTEMPTING TO SEND EMAIL');
+    console.log('📧 ============================================');
+    console.log('To:', to);
+    console.log('From:', fromEmail);
+    console.log('Subject:', subject);
+    console.log('Has API Key:', !!apiKey);
+    console.log('📧 ============================================\n');
+
+    const msg = {
       to,
       from: fromEmail,
-      subject,
-      hasApiKey: !!apiKey,
-      apiKeyPrefix: apiKey?.substring(0, 5) + '...',
-    });
-
-    const result = await resend.emails.send({
-      from: `"Telehealth Platform" <${fromEmail}>`,
-      to,
       subject,
       html: `
       <div style="max-width: 500px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #eaeaea; border-radius: 10px; background-color: #ffffff;">
@@ -78,28 +101,33 @@ export async function sendEmail({
     </div>
     `,
       text: `Your Telehealth Platform ${text} is: ${code}. This code is valid for the next ${expiresAt}. Please do not share this code with anyone.`,
-    });
+    };
 
-    if (result.error) {
-      console.error('❌ Resend API error:', result.error);
-      throw new Error(`Failed to send email: ${JSON.stringify(result.error)}`);
-    }
+    const [response] = await sgMail.send(msg);
 
     console.log('✅ Email sent successfully:', {
-      emailId: result.data?.id,
+      statusCode: response.statusCode,
       to,
     });
 
-    return result;
+    return { success: true, statusCode: response.statusCode };
   } catch (error: any) {
-    console.error('❌ Error sending verification email:', {
-      error: error?.message,
-      stack: error?.stack,
-      to,
-      code,
-    });
-    // Don't throw - allow registration to complete even if email fails
-    // But log the error so it can be debugged
+    console.error('\n❌ ============================================');
+    console.error('❌ EMAIL SENDING FAILED');
+    console.error('❌ ============================================');
+    console.error('To:', to);
+    console.error('Error Message:', error?.message);
+    if (error?.response?.body) {
+      console.error('SendGrid Response:', JSON.stringify(error.response.body, null, 2));
+    }
+    if (error?.response?.statusCode) {
+      console.error('Status Code:', error.response.statusCode);
+    }
+    if (error?.code) {
+      console.error('Error Code:', error.code);
+    }
+    console.error('Stack:', error?.stack);
+    console.error('❌ ============================================\n');
     throw error;
   }
 }
@@ -111,11 +139,18 @@ export const sendVerificationEmail = async (
   token: string,
 ) => {
   try {
+    const apiKey = ensureSendGridInitialized();
+    const fromEmail = env.SENDGRID_FROM_EMAIL || env.EMAIL_FROM || SENDGRID_FROM_EMAIL;
+    
+    if (!apiKey || !fromEmail) {
+      throw new Error('SendGrid is not configured. Please set SENDGRID_API_KEY and SENDGRID_FROM_EMAIL in your .env file');
+    }
+
     const verificationUrl = `${FRONTEND_URL}/verify-email?userId=${userId}&token=${token}`;
 
-    const mailOptions = {
-      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
+    const msg = {
       to: email,
+      from: fromEmail,
       subject: 'Verify Your Email - Telehealth Platform',
       html: `
         <!DOCTYPE html>
@@ -212,11 +247,11 @@ export const sendVerificationEmail = async (
       `,
     };
 
-    const {data, error } = await resend.emails.send(mailOptions);
-    console.log('✅ Verification email sent successfully:', data?.id);
-    return { success: true, messageId: data?.id};
-  } catch (error) {
-    console.error('❌ Failed to send verification email:', error);
+    const [response] = await sgMail.send(msg);
+    console.log('✅ Verification email sent successfully:', response.statusCode);
+    return { success: true, statusCode: response.statusCode };
+  } catch (error: any) {
+    console.error('❌ Failed to send verification email:', error?.response?.body || error?.message);
     throw new Error('Failed to send verification email');
   }
 };
@@ -227,11 +262,18 @@ export const sendPasswordResetEmail = async (
   resetToken: string,
 ) => {
   try {
+    const apiKey = ensureSendGridInitialized();
+    const fromEmail = env.SENDGRID_FROM_EMAIL || env.EMAIL_FROM || SENDGRID_FROM_EMAIL;
+    
+    if (!apiKey || !fromEmail) {
+      throw new Error('SendGrid is not configured. Please set SENDGRID_API_KEY and SENDGRID_FROM_EMAIL in your .env file');
+    }
+
     const resetUrl = `${FRONTEND_URL}/reset-password?token=${resetToken}`;
 
-    const mailOptions = {
-      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
+    const msg = {
       to: email,
+      from: fromEmail,
       subject: 'Reset Your Password - Telehealth Platform',
       html: `
         <!DOCTYPE html>
@@ -327,11 +369,11 @@ export const sendPasswordResetEmail = async (
       `,
     };
 
-    const {data, error }  = await resend.emails.send(mailOptions);
-    console.log('✅ Password reset email sent successfully:', data?.id);
-    return { success: true, messageId: data?.id };
-  } catch (error) {
-    console.error('❌ Failed to send password reset email:', error);
+    const [response] = await sgMail.send(msg);
+    console.log('✅ Password reset email sent successfully:', response.statusCode);
+    return { success: true, statusCode: response.statusCode };
+  } catch (error: any) {
+    console.error('❌ Failed to send password reset email:', error?.response?.body || error?.message);
     throw new Error('Failed to send password reset email');
   }
 };
@@ -553,21 +595,28 @@ export const sendWelcomeEmail = async (
   role: string = 'PATIENT',
 ) => {
   try {
+    const apiKey = ensureSendGridInitialized();
+    const fromEmail = env.SENDGRID_FROM_EMAIL || env.EMAIL_FROM || SENDGRID_FROM_EMAIL;
+    
+    if (!apiKey || !fromEmail) {
+      throw new Error('SendGrid is not configured. Please set SENDGRID_API_KEY and SENDGRID_FROM_EMAIL in your .env file');
+    }
+
     const emailTemplate = getWelcomeEmailTemplate(userName, role);
 
-    const mailOptions = {
-      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
+    const msg = {
       to: email,
+      from: fromEmail,
       subject: `Welcome to Telehealth Platform - Your ${role === 'PHYSICIAN' ? 'Physician' : role === 'ADMIN' ? 'Admin' : 'Patient'} Account is Ready!`,
       html: emailTemplate.html,
       text: emailTemplate.text,
     };
 
-    const {data, error }  = await resend.emails.send(mailOptions);
-    console.log('✅ Welcome email sent successfully:', data?.id);
-    return { success: true, messageId: data?.id };
-  } catch (error) {
-    console.error('❌ Failed to send welcome email:', error);
+    const [response] = await sgMail.send(msg);
+    console.log('✅ Welcome email sent successfully:', response.statusCode);
+    return { success: true, statusCode: response.statusCode };
+  } catch (error: any) {
+    console.error('❌ Failed to send welcome email:', error?.response?.body || error?.message);
     throw new Error('Failed to send welcome email');
   }
 };
@@ -579,14 +628,21 @@ export const sendPhysicianApprovalEmail = async (
   approved: boolean,
 ) => {
   try {
+    const apiKey = ensureSendGridInitialized();
+    const fromEmail = env.SENDGRID_FROM_EMAIL || env.EMAIL_FROM || SENDGRID_FROM_EMAIL;
+    
+    if (!apiKey || !fromEmail) {
+      throw new Error('SendGrid is not configured. Please set SENDGRID_API_KEY and SENDGRID_FROM_EMAIL in your .env file');
+    }
+
     const dashboardUrl = `${FRONTEND_URL}/physician/dashboard`;
     const subject = approved
       ? 'Your Physician Account Has Been Approved!'
       : 'Update on Your Physician Application';
 
-    const mailOptions = {
-      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
+    const msg = {
       to: email,
+      from: fromEmail,
       subject: subject,
       html: `
         <!DOCTYPE html>
@@ -734,14 +790,11 @@ export const sendPhysicianApprovalEmail = async (
       `,
     };
 
-    const {data, error }  = await resend.emails.send(mailOptions);
-    console.log(
-      '✅ Physician approval email sent successfully:',
-      data?.id,
-    );
-    return { success: true, messageId: data?.id };
-  } catch (error) {
-    console.error('❌ Failed to send physician approval email:', error);
+    const [response] = await sgMail.send(msg);
+    console.log('✅ Physician approval email sent successfully:', response.statusCode);
+    return { success: true, statusCode: response.statusCode };
+  } catch (error: any) {
+    console.error('❌ Failed to send physician approval email:', error?.response?.body || error?.message);
     throw new Error('Failed to send physician approval email');
   }
 };
@@ -757,12 +810,19 @@ export const sendAppointmentConfirmationEmail = async (
   meetingLink?: string,
 ) => {
   try {
+    const apiKey = ensureSendGridInitialized();
+    const fromEmail = env.SENDGRID_FROM_EMAIL || env.EMAIL_FROM || SENDGRID_FROM_EMAIL;
+    
+    if (!apiKey || !fromEmail) {
+      throw new Error('SendGrid is not configured. Please set SENDGRID_API_KEY and SENDGRID_FROM_EMAIL in your .env file');
+    }
+
     const appointmentUrl =
       meetingLink || `${FRONTEND_URL}/patient/appointments`;
 
-    const mailOptions = {
-      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
+    const msg = {
       to: email,
+      from: fromEmail,
       subject: 'Appointment Confirmed - Telehealth Platform',
       html: `
         <!DOCTYPE html>
@@ -934,14 +994,11 @@ export const sendAppointmentConfirmationEmail = async (
       `,
     };
 
-    const {data, error} = await resend.emails.send(mailOptions);
-    console.log(
-      '✅ Appointment confirmation email sent successfully:',
-      data?.id,
-    );
-    return { success: true, messageId: data?.id };
-  } catch (error) {
-    console.error('❌ Failed to send appointment confirmation email:', error);
+    const [response] = await sgMail.send(msg);
+    console.log('✅ Appointment confirmation email sent successfully:', response.statusCode);
+    return { success: true, statusCode: response.statusCode };
+  } catch (error: any) {
+    console.error('❌ Failed to send appointment confirmation email:', error?.response?.body || error?.message);
     throw new Error('Failed to send appointment confirmation email');
   }
 };
@@ -956,9 +1013,16 @@ export const sendAppointmentReminderEmail = async (
   meetingLink?: string,
 ) => {
   try {
-    const mailOptions = {
-      from:`Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
+    const apiKey = ensureSendGridInitialized();
+    const fromEmail = env.SENDGRID_FROM_EMAIL || env.EMAIL_FROM || SENDGRID_FROM_EMAIL;
+    
+    if (!apiKey || !fromEmail) {
+      throw new Error('SendGrid is not configured. Please set SENDGRID_API_KEY and SENDGRID_FROM_EMAIL in your .env file');
+    }
+
+    const msg = {
       to: email,
+      from: fromEmail,
       subject: 'Reminder: Your Appointment is Tomorrow',
       html: `
         <!DOCTYPE html>
@@ -1074,14 +1138,11 @@ export const sendAppointmentReminderEmail = async (
       `,
     };
 
-    const {data, error} = await resend.emails.send(mailOptions);
-    console.log(
-      '✅ Appointment reminder email sent successfully:',
-      data?.id,
-    );
-    return { success: true, messageId: data?.id };
-  } catch (error) {
-    console.error('❌ Failed to send appointment reminder email:', error);
+    const [response] = await sgMail.send(msg);
+    console.log('✅ Appointment reminder email sent successfully:', response.statusCode);
+    return { success: true, statusCode: response.statusCode };
+  } catch (error: any) {
+    console.error('❌ Failed to send appointment reminder email:', error?.response?.body || error?.message);
     throw new Error('Failed to send appointment reminder email');
   }
 };
@@ -1096,9 +1157,16 @@ export const sendAppointmentCancellationEmail = async (
   cancelledBy: 'patient' | 'physician' | 'admin',
 ) => {
   try {
-    const mailOptions = {
-      from: `Telehealth Platform <${process.env.RESEND_FROM_EMAIL!}>`,
+    const apiKey = ensureSendGridInitialized();
+    const fromEmail = env.SENDGRID_FROM_EMAIL || env.EMAIL_FROM || SENDGRID_FROM_EMAIL;
+    
+    if (!apiKey || !fromEmail) {
+      throw new Error('SendGrid is not configured. Please set SENDGRID_API_KEY and SENDGRID_FROM_EMAIL in your .env file');
+    }
+
+    const msg = {
       to: email,
+      from: fromEmail,
       subject: 'Appointment Cancelled - Telehealth Platform',
       html: `
         <!DOCTYPE html>
@@ -1189,14 +1257,11 @@ export const sendAppointmentCancellationEmail = async (
       `,
     };
 
-    const {data, error} = await resend.emails.send(mailOptions);
-    console.log(
-      '✅ Appointment cancellation email sent successfully:',
-      data?.id,
-    );
-    return { success: true, messageId: data?.id };
-  } catch (error) {
-    console.error('❌ Failed to send appointment cancellation email:', error);
+    const [response] = await sgMail.send(msg);
+    console.log('✅ Appointment cancellation email sent successfully:', response.statusCode);
+    return { success: true, statusCode: response.statusCode };
+  } catch (error: any) {
+    console.error('❌ Failed to send appointment cancellation email:', error?.response?.body || error?.message);
     throw new Error('Failed to send appointment cancellation email');
   }
 };

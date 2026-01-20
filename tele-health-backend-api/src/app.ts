@@ -160,9 +160,9 @@ app.get('/health', async (_: Request, res: Response) => {
       version: process.env.npm_package_version || '1.0.0',
       frontendUrl: env.FRONTEND_URL,
       allowedOrigins: uniqueOrigins,
-      hasResendKey: !!(process.env.Resend_API_KEY || process.env.RESEND_API_KEY),
-      hasResendFromEmail: !!process.env.RESEND_FROM_EMAIL,
-      resendFromEmail: process.env.RESEND_FROM_EMAIL || 'NOT SET',
+      hasSendGridKey: !!process.env.SENDGRID_API_KEY,
+      hasSendGridFromEmail: !!process.env.SENDGRID_FROM_EMAIL,
+      sendGridFromEmail: process.env.SENDGRID_FROM_EMAIL || 'NOT SET',
     };
 
     res.status(200).json(healthCheck);

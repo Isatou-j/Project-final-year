@@ -17,6 +17,8 @@ model User {
   profileUrl           String?   @db.Text
   lastLogin            DateTime?
   isVerified           Boolean   @default(false)
+  verificationToken    String?
+  tokenExpiresAt       DateTime?
   emailVerified Boolean   @default(false)
   isActive      Boolean   @default(true)
   deletionReason       String?   @db.Text
@@ -36,6 +38,8 @@ model User {
 
   @@index([email])
   @@index([role])
+  @@index([verificationToken])
+  @@index([tokenExpiresAt])
   @@index([deletedAt, isActive])
   @@index([createdAt])
   @@map("users")

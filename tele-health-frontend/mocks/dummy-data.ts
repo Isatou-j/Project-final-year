@@ -42,7 +42,7 @@ export const features = [
 export const doctors = [
   {
     id: 1,
-    name: 'Dr. Sarah Williams',
+    name: 'Dr. Tamsirr Ceesay',
     specialty: 'General Physician',
     experience: '12 Years',
     patients: '2,000+',
@@ -51,12 +51,12 @@ export const doctors = [
     fee: '$80',
     available: true,
     image:
-      'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=500&h=500&fit=crop&crop=face&auto=format',
     about: 'Specialized in internal medicine with focus on preventive care',
   },
   {
     id: 2,
-    name: 'Dr. Michael Chen',
+    name: 'Dr. Omar Bojang',
     specialty: 'Cardiologist',
     experience: '15 Years',
     patients: '3,500+',
@@ -65,12 +65,12 @@ export const doctors = [
     fee: '$120',
     available: true,
     image:
-      'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop',
+      'https://cdn.oreateai.com/aiimage/strategy/eeaebd18f9fa49848d137ce5c03921fb.jpg',
     about: 'Expert in heart disease prevention and cardiac rehabilitation',
   },
   {
     id: 3,
-    name: 'Dr. Emily Roberts',
+    name: 'Dr. Fatou Jawaneh',
     specialty: 'Dermatologist',
     experience: '10 Years',
     patients: '1,800+',
@@ -79,26 +79,26 @@ export const doctors = [
     fee: '$90',
     available: true,
     image:
-      'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop',
+      'https://cdn.oreateai.com/aiimage/strategy/f20d16ac5e9a401e9db38ceb5136b0e1.jpg',
     about: 'Specializing in medical and cosmetic dermatology',
   },
   {
     id: 4,
-    name: 'Dr. James Wilson',
+    name: 'Dr. Momodou Jallow',
     specialty: 'Pediatrician',
-    experience: '18 Years',
+    experience: '15 Years',
     patients: '4,200+',
     rating: 4.9,
     reviews: 512,
     fee: '$75',
     available: false,
     image:
-      'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8CmKuvFP9T2j3iv-FV5Fo74-l8vN3m7Nr7A&s',
     about: 'Compassionate care for infants, children, and adolescents',
   },
   {
     id: 5,
-    name: 'Dr. Lisa Anderson',
+    name: 'Dr. Zainab Mohammed',
     specialty: 'Neurologist',
     experience: '14 Years',
     patients: '2,600+',
@@ -107,12 +107,12 @@ export const doctors = [
     fee: '$110',
     available: true,
     image:
-      'https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1638202993928-7267aad84c31?w=400&h=400&fit=crop&crop=face',
     about: 'Expert in treating neurological disorders and headaches',
   },
   {
     id: 6,
-    name: 'Dr. David Martinez',
+    name: 'Dr. Thabo Mthembu',
     specialty: 'Orthopedic Surgeon',
     experience: '20 Years',
     patients: '5,000+',
@@ -121,8 +121,22 @@ export const doctors = [
     fee: '$150',
     available: true,
     image:
-      'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&fit=crop',
+      'https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&fit=crop&crop=face',
     about: 'Specialized in joint replacement and sports medicine',
+  },
+  {
+    id: 7,
+    name: 'Dr. Binta Ceesay',
+    specialty: 'General Practice',
+    experience: '2 Years',
+    patients: '500+',
+    rating: 4.7,
+    reviews: 89,
+    fee: '$80',
+    available: true,
+    image:
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnnY3WDyUO6qXqOXOqDCs75zw6-oq-YECq1g&s',
+    about: 'Dedicated general practitioner committed to providing quality primary healthcare services',
   },
 ];
 

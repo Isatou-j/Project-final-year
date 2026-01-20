@@ -2717,6 +2717,8 @@ export namespace Prisma {
     profileUrl: string | null
     lastLogin: Date | null
     isVerified: boolean | null
+    verificationToken: string | null
+    tokenExpiresAt: Date | null
     emailVerified: boolean | null
     isActive: boolean | null
     deletionReason: string | null
@@ -2736,6 +2738,8 @@ export namespace Prisma {
     profileUrl: string | null
     lastLogin: Date | null
     isVerified: boolean | null
+    verificationToken: string | null
+    tokenExpiresAt: Date | null
     emailVerified: boolean | null
     isActive: boolean | null
     deletionReason: string | null
@@ -2755,6 +2759,8 @@ export namespace Prisma {
     profileUrl: number
     lastLogin: number
     isVerified: number
+    verificationToken: number
+    tokenExpiresAt: number
     emailVerified: number
     isActive: number
     deletionReason: number
@@ -2784,6 +2790,8 @@ export namespace Prisma {
     profileUrl?: true
     lastLogin?: true
     isVerified?: true
+    verificationToken?: true
+    tokenExpiresAt?: true
     emailVerified?: true
     isActive?: true
     deletionReason?: true
@@ -2803,6 +2811,8 @@ export namespace Prisma {
     profileUrl?: true
     lastLogin?: true
     isVerified?: true
+    verificationToken?: true
+    tokenExpiresAt?: true
     emailVerified?: true
     isActive?: true
     deletionReason?: true
@@ -2822,6 +2832,8 @@ export namespace Prisma {
     profileUrl?: true
     lastLogin?: true
     isVerified?: true
+    verificationToken?: true
+    tokenExpiresAt?: true
     emailVerified?: true
     isActive?: true
     deletionReason?: true
@@ -2928,6 +2940,8 @@ export namespace Prisma {
     profileUrl: string | null
     lastLogin: Date | null
     isVerified: boolean
+    verificationToken: string | null
+    tokenExpiresAt: Date | null
     emailVerified: boolean
     isActive: boolean
     deletionReason: string | null
@@ -2966,6 +2980,8 @@ export namespace Prisma {
     profileUrl?: boolean
     lastLogin?: boolean
     isVerified?: boolean
+    verificationToken?: boolean
+    tokenExpiresAt?: boolean
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: boolean
@@ -2993,6 +3009,8 @@ export namespace Prisma {
     profileUrl?: boolean
     lastLogin?: boolean
     isVerified?: boolean
+    verificationToken?: boolean
+    tokenExpiresAt?: boolean
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: boolean
@@ -3012,6 +3030,8 @@ export namespace Prisma {
     profileUrl?: boolean
     lastLogin?: boolean
     isVerified?: boolean
+    verificationToken?: boolean
+    tokenExpiresAt?: boolean
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: boolean
@@ -3031,6 +3051,8 @@ export namespace Prisma {
     profileUrl?: boolean
     lastLogin?: boolean
     isVerified?: boolean
+    verificationToken?: boolean
+    tokenExpiresAt?: boolean
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: boolean
@@ -3041,7 +3063,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "username" | "password" | "role" | "profileUrl" | "lastLogin" | "isVerified" | "emailVerified" | "isActive" | "deletionReason" | "passwordUpdatedAt" | "deletedAt" | "verifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "username" | "password" | "role" | "profileUrl" | "lastLogin" | "isVerified" | "verificationToken" | "tokenExpiresAt" | "emailVerified" | "isActive" | "deletionReason" | "passwordUpdatedAt" | "deletedAt" | "verifiedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     patient?: boolean | User$patientArgs<ExtArgs>
     physician?: boolean | User$physicianArgs<ExtArgs>
@@ -3075,6 +3097,8 @@ export namespace Prisma {
       profileUrl: string | null
       lastLogin: Date | null
       isVerified: boolean
+      verificationToken: string | null
+      tokenExpiresAt: Date | null
       emailVerified: boolean
       isActive: boolean
       deletionReason: string | null
@@ -3521,6 +3545,8 @@ export namespace Prisma {
     readonly profileUrl: FieldRef<"User", 'String'>
     readonly lastLogin: FieldRef<"User", 'DateTime'>
     readonly isVerified: FieldRef<"User", 'Boolean'>
+    readonly verificationToken: FieldRef<"User", 'String'>
+    readonly tokenExpiresAt: FieldRef<"User", 'DateTime'>
     readonly emailVerified: FieldRef<"User", 'Boolean'>
     readonly isActive: FieldRef<"User", 'Boolean'>
     readonly deletionReason: FieldRef<"User", 'String'>
@@ -23884,6 +23910,8 @@ export namespace Prisma {
     profileUrl: 'profileUrl',
     lastLogin: 'lastLogin',
     isVerified: 'isVerified',
+    verificationToken: 'verificationToken',
+    tokenExpiresAt: 'tokenExpiresAt',
     emailVerified: 'emailVerified',
     isActive: 'isActive',
     deletionReason: 'deletionReason',
@@ -24433,6 +24461,8 @@ export namespace Prisma {
     profileUrl?: StringNullableFilter<"User"> | string | null
     lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     isVerified?: BoolFilter<"User"> | boolean
+    verificationToken?: StringNullableFilter<"User"> | string | null
+    tokenExpiresAt?: DateTimeNullableFilter<"User"> | Date | string | null
     emailVerified?: BoolFilter<"User"> | boolean
     isActive?: BoolFilter<"User"> | boolean
     deletionReason?: StringNullableFilter<"User"> | string | null
@@ -24459,6 +24489,8 @@ export namespace Prisma {
     profileUrl?: SortOrderInput | SortOrder
     lastLogin?: SortOrderInput | SortOrder
     isVerified?: SortOrder
+    verificationToken?: SortOrderInput | SortOrder
+    tokenExpiresAt?: SortOrderInput | SortOrder
     emailVerified?: SortOrder
     isActive?: SortOrder
     deletionReason?: SortOrderInput | SortOrder
@@ -24488,6 +24520,8 @@ export namespace Prisma {
     profileUrl?: StringNullableFilter<"User"> | string | null
     lastLogin?: DateTimeNullableFilter<"User"> | Date | string | null
     isVerified?: BoolFilter<"User"> | boolean
+    verificationToken?: StringNullableFilter<"User"> | string | null
+    tokenExpiresAt?: DateTimeNullableFilter<"User"> | Date | string | null
     emailVerified?: BoolFilter<"User"> | boolean
     isActive?: BoolFilter<"User"> | boolean
     deletionReason?: StringNullableFilter<"User"> | string | null
@@ -24514,6 +24548,8 @@ export namespace Prisma {
     profileUrl?: SortOrderInput | SortOrder
     lastLogin?: SortOrderInput | SortOrder
     isVerified?: SortOrder
+    verificationToken?: SortOrderInput | SortOrder
+    tokenExpiresAt?: SortOrderInput | SortOrder
     emailVerified?: SortOrder
     isActive?: SortOrder
     deletionReason?: SortOrderInput | SortOrder
@@ -24541,6 +24577,8 @@ export namespace Prisma {
     profileUrl?: StringNullableWithAggregatesFilter<"User"> | string | null
     lastLogin?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     isVerified?: BoolWithAggregatesFilter<"User"> | boolean
+    verificationToken?: StringNullableWithAggregatesFilter<"User"> | string | null
+    tokenExpiresAt?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     emailVerified?: BoolWithAggregatesFilter<"User"> | boolean
     isActive?: BoolWithAggregatesFilter<"User"> | boolean
     deletionReason?: StringNullableWithAggregatesFilter<"User"> | string | null
@@ -25914,6 +25952,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -25940,6 +25980,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -25965,6 +26007,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25991,6 +26035,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26017,6 +26063,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -26035,6 +26083,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26054,6 +26104,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27614,6 +27666,8 @@ export namespace Prisma {
     profileUrl?: SortOrder
     lastLogin?: SortOrder
     isVerified?: SortOrder
+    verificationToken?: SortOrder
+    tokenExpiresAt?: SortOrder
     emailVerified?: SortOrder
     isActive?: SortOrder
     deletionReason?: SortOrder
@@ -27637,6 +27691,8 @@ export namespace Prisma {
     profileUrl?: SortOrder
     lastLogin?: SortOrder
     isVerified?: SortOrder
+    verificationToken?: SortOrder
+    tokenExpiresAt?: SortOrder
     emailVerified?: SortOrder
     isActive?: SortOrder
     deletionReason?: SortOrder
@@ -27656,6 +27712,8 @@ export namespace Prisma {
     profileUrl?: SortOrder
     lastLogin?: SortOrder
     isVerified?: SortOrder
+    verificationToken?: SortOrder
+    tokenExpiresAt?: SortOrder
     emailVerified?: SortOrder
     isActive?: SortOrder
     deletionReason?: SortOrder
@@ -30641,6 +30699,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -30666,6 +30726,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -30784,6 +30846,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30809,6 +30873,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -30901,6 +30967,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -30926,6 +30994,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -31069,6 +31139,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31094,6 +31166,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31192,6 +31266,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -31217,6 +31293,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -31257,6 +31335,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -31282,6 +31362,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32463,6 +32545,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -32488,6 +32572,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -32528,6 +32614,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32553,6 +32641,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32577,6 +32667,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -32602,6 +32694,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -32642,6 +32736,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32667,6 +32763,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32691,6 +32789,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -32716,6 +32816,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -32756,6 +32858,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32781,6 +32885,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32805,6 +32911,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -32830,6 +32938,8 @@ export namespace Prisma {
     profileUrl?: string | null
     lastLogin?: Date | string | null
     isVerified?: boolean
+    verificationToken?: string | null
+    tokenExpiresAt?: Date | string | null
     emailVerified?: boolean
     isActive?: boolean
     deletionReason?: string | null
@@ -32870,6 +32980,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null
@@ -32895,6 +33007,8 @@ export namespace Prisma {
     profileUrl?: NullableStringFieldUpdateOperationsInput | string | null
     lastLogin?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     isVerified?: BoolFieldUpdateOperationsInput | boolean
+    verificationToken?: NullableStringFieldUpdateOperationsInput | string | null
+    tokenExpiresAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     emailVerified?: BoolFieldUpdateOperationsInput | boolean
     isActive?: BoolFieldUpdateOperationsInput | boolean
     deletionReason?: NullableStringFieldUpdateOperationsInput | string | null

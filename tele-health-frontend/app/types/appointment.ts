@@ -38,3 +38,4 @@ export type AppointmentsData =
   | AppointmentsResponse 
   | { data: Appointment[] };
 
+

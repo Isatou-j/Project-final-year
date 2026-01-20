@@ -30,10 +30,17 @@ export const registerPatientController = async (
   next: NextFunction,
 ): Promise<any> => {
   try {
+    console.log('\n📝 ============================================');
+    console.log('📝 PATIENT REGISTRATION REQUEST');
+    console.log('📝 ============================================');
+    console.log('Request Body:', JSON.stringify(req.body, null, 2));
+    console.log('📝 ============================================\n');
+
     const patientData = RegisterPatientSchema.parse(req.body);
 
     const userExist = await authService.userExists(patientData.email);
     if (userExist) {
+      console.log('❌ User already exists:', patientData.email);
       return res.status(400).json({
         success: false,
         message: 'User already exists',
@@ -43,7 +50,19 @@ export const registerPatientController = async (
     const response = await authService.registerPatient(patientData);
 
     return res.status(201).json(response);
-  } catch (error) {
+  } catch (error: any) {
+    // Log validation errors for debugging
+    if (error.name === 'ZodError') {
+      console.error('\n❌ ============================================');
+      console.error('❌ VALIDATION ERROR IN PATIENT REGISTRATION');
+      console.error('❌ ============================================');
+      console.error('Request Body:', JSON.stringify(req.body, null, 2));
+      console.error('Validation Errors:');
+      error.issues.forEach((issue: any, index: number) => {
+        console.error(`  ${index + 1}. ${issue.path.join('.')}: ${issue.message}`);
+      });
+      console.error('❌ ============================================\n');
+    }
     next(error);
   }
 };

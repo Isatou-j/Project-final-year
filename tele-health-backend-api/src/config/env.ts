@@ -41,10 +41,9 @@ const envSchema = z.object({
   EMAIL_FROM: z.email().optional(),
   REDIS_URL: z.url().optional(),
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'http', 'debug']).default('info'),
-  // Resend Email Configuration
-  Resend_API_KEY: z.string().optional(),
-  RESEND_API_KEY: z.string().optional(), // Alternative naming
-  RESEND_FROM_EMAIL: z.string().email().optional(),
+  // SendGrid Email Configuration
+  SENDGRID_API_KEY: z.string().optional(),
+  SENDGRID_FROM_EMAIL: z.string().email().optional(),
   // Google Calendar API Configuration (for Google Meet links)
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
@@ -75,9 +74,8 @@ const validateEnv = () => {
       EMAIL_FROM: process.env.EMAIL_FROM,
       REDIS_URL: process.env.REDIS_URL,
       LOG_LEVEL: process.env.LOG_LEVEL,
-      Resend_API_KEY: process.env.Resend_API_KEY || process.env.RESEND_API_KEY,
-      RESEND_API_KEY: process.env.RESEND_API_KEY || process.env.Resend_API_KEY,
-      RESEND_FROM_EMAIL: process.env.RESEND_FROM_EMAIL,
+      SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
+      SENDGRID_FROM_EMAIL: process.env.SENDGRID_FROM_EMAIL,
       GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
       GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
       GOOGLE_REDIRECT_URI: process.env.GOOGLE_REDIRECT_URI,

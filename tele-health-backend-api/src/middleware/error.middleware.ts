@@ -84,21 +84,10 @@ export const errorHandler = (
     logger.warn('Client Error:', errorDetails);
   }
 
+  // Handle different error types
   if (err.name === 'ValidationError' || err.name === 'ZodError') {
     statusCode = 400;
     message = 'Validation Error';
-    // Include Zod validation details if available
-    if ((err as any).issues && Array.isArray((err as any).issues)) {
-      response.errors = (err as any).issues.map((issue: any) => ({
-        path: issue.path.join('.'),
-        message: issue.message,
-      }));
-      // Create a more detailed message
-      const errorMessages = response.errors
-        .map((e: any) => `${e.path}: ${e.message}`)
-        .join(', ');
-      message = `Validation Error: ${errorMessages}`;
-    }
   } else if (err.name === 'JsonWebTokenError') {
     statusCode = 401;
     message = 'Invalid token';
@@ -120,6 +109,19 @@ export const errorHandler = (
     message,
     statusCode,
   };
+
+  // Include Zod validation details if available
+  if ((err.name === 'ValidationError' || err.name === 'ZodError') && (err as any).issues && Array.isArray((err as any).issues)) {
+    response.errors = (err as any).issues.map((issue: any) => ({
+      path: issue.path.join('.'),
+      message: issue.message,
+    }));
+    // Create a more detailed message
+    const errorMessages = response.errors
+      .map((e: any) => `${e.path}: ${e.message}`)
+      .join(', ');
+    response.message = `Validation Error: ${errorMessages}`;
+  }
 
   if (process.env.NODE_ENV === 'development') {
     response.stack = err.stack;

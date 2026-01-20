@@ -62,12 +62,27 @@ class ApiClient {
             });
           }
           
+          // Define public routes that don't require authentication
+          const publicRoutes = [
+            '/auth/',
+            '/physician/public',
+            '/physician/top-rated',
+            '/physician/statistics',
+            '/reviews',
+            '/reviews/physician/',
+            '/reviews/stats/',
+          ];
+          
+          const isPublicRoute = config.url && publicRoutes.some(route => 
+            config.url?.includes(route)
+          );
+          
           if (session?.accessToken) {
             config.headers.Authorization = `Bearer ${session.accessToken}`;
           } else {
-            console.warn('⚠️ No access token in session for request:', config.url);
-            // Don't proceed without token for protected routes
-            if (config.url && !config.url.includes('/auth/')) {
+            // Only warn/error for protected routes
+            if (config.url && !isPublicRoute) {
+              console.warn('⚠️ No access token in session for request:', config.url);
               console.error('❌ Missing authentication token for protected route:', config.url);
             }
           }

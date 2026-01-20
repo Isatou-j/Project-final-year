@@ -129,6 +129,8 @@ exports.Prisma.UserScalarFieldEnum = {
   profileUrl: 'profileUrl',
   lastLogin: 'lastLogin',
   isVerified: 'isVerified',
+  verificationToken: 'verificationToken',
+  tokenExpiresAt: 'tokenExpiresAt',
   emailVerified: 'emailVerified',
   isActive: 'isActive',
   deletionReason: 'deletionReason',

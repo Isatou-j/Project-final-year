@@ -74,21 +74,42 @@ export const registerPatient = async (
 
   const expiryTime = getRelativeExpiry(expiresAt);
 
+  console.log('\n🔔 ============================================');
+  console.log('🔔 REGISTRATION: Attempting to send verification email');
+  console.log('🔔 ============================================');
+  console.log('Email:', user.newUser.email);
+  console.log('Code:', code);
+  console.log('Expires At:', expiryTime);
+  console.log('🔔 ============================================\n');
+
   try {
-    await sendEmail({
+    const emailResult = await sendEmail({
       to: user.newUser.email,
       subject: 'Your Verification Code',
       text: 'verification code',
       code: code,
       expiresAt: expiryTime,
     });
-    console.log('✅ Verification email sent to patient:', user.newUser.email);
+    console.log('\n✅ ============================================');
+    console.log('✅ VERIFICATION EMAIL SENT SUCCESSFULLY');
+    console.log('✅ ============================================');
+    console.log('Email:', user.newUser.email);
+    console.log('Status Code:', emailResult.statusCode);
+    console.log('✅ ============================================\n');
   } catch (emailError: any) {
-    console.error('❌ Failed to send verification email during patient registration:', {
-      email: user.newUser.email,
-      error: emailError?.message,
-      stack: emailError?.stack,
-    });
+    console.error('\n❌ ============================================');
+    console.error('❌ FAILED TO SEND VERIFICATION EMAIL');
+    console.error('❌ ============================================');
+    console.error('Email:', user.newUser.email);
+    console.error('Error Message:', emailError?.message);
+    if (emailError?.response?.body) {
+      console.error('SendGrid Response:', JSON.stringify(emailError.response.body, null, 2));
+    }
+    if (emailError?.code) {
+      console.error('Error Code:', emailError.code);
+    }
+    console.error('Stack:', emailError?.stack);
+    console.error('❌ ============================================\n');
     // Continue with registration even if email fails
     // User can request a new code later
   }
@@ -207,21 +228,42 @@ export const registerPhysician = async (
 
   const expiryTime = getRelativeExpiry(expiresAt);
 
+  console.log('\n🔔 ============================================');
+  console.log('🔔 REGISTRATION: Attempting to send verification email');
+  console.log('🔔 ============================================');
+  console.log('Email:', user.newUser.email);
+  console.log('Code:', code);
+  console.log('Expires At:', expiryTime);
+  console.log('🔔 ============================================\n');
+
   try {
-    await sendEmail({
+    const emailResult = await sendEmail({
       to: user.newUser.email,
       subject: 'Your Verification Code',
       text: 'verification code',
       code: code,
       expiresAt: expiryTime,
     });
-    console.log('✅ Verification email sent to physician:', user.newUser.email);
+    console.log('\n✅ ============================================');
+    console.log('✅ VERIFICATION EMAIL SENT SUCCESSFULLY');
+    console.log('✅ ============================================');
+    console.log('Email:', user.newUser.email);
+    console.log('Status Code:', emailResult.statusCode);
+    console.log('✅ ============================================\n');
   } catch (emailError: any) {
-    console.error('❌ Failed to send verification email during physician registration:', {
-      email: user.newUser.email,
-      error: emailError?.message,
-      stack: emailError?.stack,
-    });
+    console.error('\n❌ ============================================');
+    console.error('❌ FAILED TO SEND VERIFICATION EMAIL');
+    console.error('❌ ============================================');
+    console.error('Email:', user.newUser.email);
+    console.error('Error Message:', emailError?.message);
+    if (emailError?.response?.body) {
+      console.error('SendGrid Response:', JSON.stringify(emailError.response.body, null, 2));
+    }
+    if (emailError?.code) {
+      console.error('Error Code:', emailError.code);
+    }
+    console.error('Stack:', emailError?.stack);
+    console.error('❌ ============================================\n');
     // Continue with registration even if email fails
     // User can request a new code later
   }
@@ -843,12 +885,25 @@ export const approvePhysician = async (
     },
   });
 
-  const physicianName = `${physician.firstName} ${physician.lastName}`;
-  await sendPhysicianApprovalEmail(
-    physician.user.email,
-    physicianName,
-    approved,
-  );
+  // Send approval/rejection email to physician
+  try {
+    const physicianName = `${physician.firstName} ${physician.lastName}`;
+    await sendPhysicianApprovalEmail(
+      physician.user.email,
+      physicianName,
+      approved,
+    );
+    console.log(
+      `✅ ${approved ? 'Approval' : 'Rejection'} email sent to physician: ${physician.user.email}`,
+    );
+  } catch (emailError: any) {
+    console.error(
+      `❌ Failed to send ${approved ? 'approval' : 'rejection'} email to physician:`,
+      emailError?.message || emailError,
+    );
+    // Don't throw - approval was successful even if email failed
+    // This ensures the approval process completes successfully
+  }
 };
 
 export const userExists = async (email: string): Promise<boolean> => {
