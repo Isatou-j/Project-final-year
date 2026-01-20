@@ -2242,3 +2242,16 @@
 {"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /patient/register - 400 - 308ms - 49 bytes\u001b[39m","timestamp":"2026-01-20 02:22:09:229"}
 {"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /api/v1/auth/patient/register - ::1\u001b[39m","timestamp":"2026-01-20 02:32:54:3254"}
 {"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /patient/register - 400 - 163ms - 49 bytes\u001b[39m","timestamp":"2026-01-20 02:32:54:3254"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /api/v1/auth/patient/register - ::1\u001b[39m","timestamp":"2026-01-20 02:41:55:4155"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /patient/register - 400 - 417ms - 49 bytes\u001b[39m","timestamp":"2026-01-20 02:41:56:4156"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /api/v1/auth/request-verification-code - ::1\u001b[39m","timestamp":"2026-01-20 02:42:52:4252"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /request-verification-code - 200 - 1263ms - 66 bytes\u001b[39m","timestamp":"2026-01-20 02:42:54:4254"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /api/v1/auth/verify-email - ::1\u001b[39m","timestamp":"2026-01-20 02:43:19:4319"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /verify-email - 200 - 541ms - 987 bytes\u001b[39m","timestamp":"2026-01-20 02:43:20:4320"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /api/v1/auth/login - ::1\u001b[39m","timestamp":"2026-01-20 02:43:23:4323"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /login - 401 - 167ms - 89 bytes\u001b[39m","timestamp":"2026-01-20 02:43:23:4323"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /api/v1/auth/login - ::1\u001b[39m","timestamp":"2026-01-20 02:43:35:4335"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mPOST /login - 200 - 184ms - 995 bytes\u001b[39m","timestamp":"2026-01-20 02:43:36:4336"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET /api/v1/notifications - ::1\u001b[39m","timestamp":"2026-01-20 02:43:38:4338"}
+{"level":"\u001b[37mdebug\u001b[39m","message":"\u001b[37mUser authenticated: jceesayisatou@gmail.com (PATIENT)\u001b[39m","timestamp":"2026-01-20 02:43:38:4338"}
+{"level":"\u001b[35mhttp\u001b[39m","message":"\u001b[35mGET / - 200 - 259ms - 70 bytes\u001b[39m","timestamp":"2026-01-20 02:43:38:4338"}
